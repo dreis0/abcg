@@ -74,7 +74,7 @@ void Obstacles::update(const Rocket &rocket, float deltaTime) {
 
   // discard objects that are out of the screen
   m_obstacles.remove_if([](const Obstacles::Obstacle &x) {
-    return x.m_translation.y < -1.3f; }))
+    return x.m_translation.y < -1.3f; });
 }
 
 Obstacles::Obstacle Obstacles::createObstacle() {

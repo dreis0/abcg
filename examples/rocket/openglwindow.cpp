@@ -105,6 +105,9 @@ void OpenGLWindow::paintUI() {
       ImGui::Text("*You Win!*");
     }
 
+    auto numObstacles{m_obstacles.m_obstacles.size()};
+    //ImGui::Text(fmt::format("{}", numObstacles).c_str());
+
     ImGui::PopFont();
     ImGui::End();
   }
@@ -124,4 +127,16 @@ void OpenGLWindow::terminateGL() {
   m_obstacles.terminateGL();
 }
 
-void OpenGLWindow::checkCollisions() {}
+void OpenGLWindow::checkCollisions() {
+  // Check collision between ship and asteroids
+  for (const auto& obstacle : m_obstacles.m_obstacles) {
+    const auto obstacleTranslation{obstacle.m_translation};
+    const auto distance{
+        glm::distance(m_rocket.m_translation, obstacleTranslation)};
+
+    if (distance < m_rocket.m_scale * 0.45f + obstacle.m_scale * 0.85f) {
+      m_gameData.m_state = State::GameOver;
+      m_restartWaitTimer.restart();
+    }
+  }
+}

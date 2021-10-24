@@ -4,6 +4,7 @@
 #include <imgui.h>
 
 #include <random>
+#include <fmt/core.h>
 
 #include "abcg.hpp"
 #include "gamedata.hpp"
