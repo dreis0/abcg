@@ -51,7 +51,8 @@ void OpenGLWindow::initializeGL() {
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
 
-  m_car.initializeGL(m_program);
+  m_rocket.initializeGL(m_program);
+  m_obstacles.initializeGL(m_program);
 }
 
 void OpenGLWindow::update() {
@@ -64,7 +65,8 @@ void OpenGLWindow::update() {
     return;
   }
 
-  m_car.update(m_gameData, getDeltaTime());
+  m_rocket.update(m_gameData, deltaTime);
+  m_obstacles.update(m_rocket, deltaTime);
 
   if (m_gameData.m_state == State::Playing) {
     checkCollisions();
@@ -78,7 +80,8 @@ void OpenGLWindow::paintGL() {
   abcg::glClear(GL_COLOR_BUFFER_BIT);
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
 
-  m_car.paintGL(m_gameData);
+  m_rocket.paintGL(m_gameData);
+  m_obstacles.paintGL();
 }
 
 void OpenGLWindow::paintUI() {
@@ -117,7 +120,8 @@ void OpenGLWindow::resizeGL(int width, int height) {
 void OpenGLWindow::terminateGL() {
   abcg::glDeleteProgram(m_program);
 
-  m_car.terminateGL();
+  m_rocket.terminateGL();
+  m_obstacles.terminateGL();
 }
 
 void OpenGLWindow::checkCollisions() {}

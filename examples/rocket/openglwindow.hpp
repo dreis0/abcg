@@ -8,6 +8,7 @@
 #include "abcg.hpp"
 #include "gamedata.hpp"
 #include "rocket.hpp"
+#include "obstacles.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
@@ -25,7 +26,8 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   int m_viewportHeight{};
 
   GameData m_gameData;
-  Rocket m_car;
+  Rocket m_rocket;
+  Obstacles m_obstacles;
 
   abcg::ElapsedTimer m_restartWaitTimer;
 

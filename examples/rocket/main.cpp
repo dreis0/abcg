@@ -9,11 +9,11 @@ int main(int argc, char **argv) {
 
     auto window{std::make_unique<OpenGLWindow>()};
     window->setOpenGLSettings({.samples = 4});
-    window->setWindowSettings({.width = 800,
-                               .height = 800,
+    window->setWindowSettings({.width = 1000,
+                               .height = 1000,
                                .showFPS = false,
                                .showFullscreenButton = false,
-                               .title = "Car Drive"});
+                               .title = "Rocket Trip"});
     app.run(std::move(window));
   } catch (const abcg::Exception &exception) {
     fmt::print(stderr, "{}\n", exception.what());
