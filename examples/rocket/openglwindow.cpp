@@ -1,6 +1,7 @@
 #include "openglwindow.hpp"
 
 #include <imgui.h>
+#include <stdlib.h>
 
 #include "abcg.hpp"
 
@@ -171,5 +172,9 @@ void OpenGLWindow::updateScore() {
   int gameTime = m_gameTime.elapsed();
   if (gameTime > 1) {
     m_gameData.score = gameTime - 1;
+
+    // Give bonus score for accelerating
+    int bonus = 4 * abs(m_rocket.m_velocity.y / m_rocket.m_acceleration);
+    m_gameData.score += bonus;
   }
 }

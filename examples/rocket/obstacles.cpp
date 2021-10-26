@@ -67,7 +67,7 @@ void Obstacles::update(const Rocket &rocket, float deltaTime) {
 
   // move obstacles down
   for (auto &obstacle : m_obstacles) {
-    obstacle.m_translation.y -= 0.0012f + rocket.m_velocity.y;
+    obstacle.m_translation.y -= rocket.m_baseSpeed + rocket.m_velocity.y;
     std::uniform_int_distribution<int> range(1, 10);
     auto randomValue{range(m_randomEngine)};
   }
@@ -79,7 +79,7 @@ void Obstacles::update(const Rocket &rocket, float deltaTime) {
 
 Obstacles::Obstacle Obstacles::createObstacle() {
   Obstacle obstacle;
-  std::uniform_real_distribution<float> randomScaleRange(0.05f, 0.18f);
+  std::uniform_real_distribution<float> randomScaleRange(0.05f, 0.22f);
   float scale = randomScaleRange(m_randomEngine);
 
   std::uniform_real_distribution<float> randomXDist(-0.90f, 0.90f);
