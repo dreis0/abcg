@@ -46,9 +46,9 @@ void Obstacles::paintGL() {
 }
 
 void Obstacles::terminateGL() {
-  for (auto asteroid : m_obstacles) {
-    abcg::glDeleteBuffers(1, &asteroid.m_vbo);
-    abcg::glDeleteVertexArrays(1, &asteroid.m_vao);
+  for (auto obstacle : m_obstacles) {
+    abcg::glDeleteBuffers(1, &obstacle.m_vbo);
+    abcg::glDeleteVertexArrays(1, &obstacle.m_vao);
   }
 }
 
@@ -59,9 +59,11 @@ void Obstacles::update(const Rocket &rocket, float deltaTime) {
     std::uniform_int_distribution<int> range(0, 2);
 
     std::vector<int> els(range(m_randomEngine));
+    std::list<Obstacle> newObstacles;
+
     for (int i : els) {
-      auto newObstacle{createObstacle()};
-      m_obstacles.push_back(newObstacle);
+      auto obstacle{createObstacle()};
+      newObstacles.push_back(obstacle);
     }
   }
 
