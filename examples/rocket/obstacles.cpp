@@ -53,17 +53,16 @@ void Obstacles::terminateGL() {
 }
 
 void Obstacles::update(const Rocket &rocket, float deltaTime) {
-  // add new obstacles after intervale
+  // add new obstacles after interval
   if (m_new_obstacle_timer.elapsed() > newObstacleInterval / 1000.0) {
     m_new_obstacle_timer.restart();
     std::uniform_int_distribution<int> range(0, 2);
 
     std::vector<int> els(range(m_randomEngine));
-    std::list<Obstacle> newObstacles;
 
     for (int i : els) {
       auto obstacle{createObstacle()};
-      newObstacles.push_back(obstacle);
+      m_obstacles.push_back(obstacle);
     }
   }
 
