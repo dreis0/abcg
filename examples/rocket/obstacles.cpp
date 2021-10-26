@@ -56,7 +56,7 @@ void Obstacles::update(const Rocket &rocket, float deltaTime) {
   // add new obstacles after intervale
   if (m_new_obstacle_timer.elapsed() > newObstacleInterval / 1000.0) {
     m_new_obstacle_timer.restart();
-    std::uniform_int_distribution<int> range(0, 5);
+    std::uniform_int_distribution<int> range(0, 2);
 
     std::vector<int> els(range(m_randomEngine));
     for (int i : els) {
@@ -82,7 +82,7 @@ Obstacles::Obstacle Obstacles::createObstacle() {
   std::uniform_real_distribution<float> randomScaleRange(0.05f, 0.18f);
   float scale = randomScaleRange(m_randomEngine);
 
-  std::uniform_real_distribution<float> randomXDist(-0.80f, 0.80f);
+  std::uniform_real_distribution<float> randomXDist(-0.90f, 0.90f);
   auto randomX{randomXDist(m_randomEngine)};
 
   glm::vec2 translation{randomX, 0.80f};

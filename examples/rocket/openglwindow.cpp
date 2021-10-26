@@ -49,7 +49,10 @@ void OpenGLWindow::initializeGL() {
 }
 
 void OpenGLWindow::restart() {
+  m_gameTime.restart();
+
   m_gameData.m_state = State::Playing;
+  m_gameData.score = 0;
 
   m_rocket.initializeGL(m_program);
   m_obstacles.initializeGL(m_program);
@@ -58,19 +61,12 @@ void OpenGLWindow::restart() {
 void OpenGLWindow::update() {
   const float deltaTime{static_cast<float>(getDeltaTime())};
 
-  // Wait 5 seconds before restarting
-  if (m_gameData.m_state != State::Playing &&
-      m_restartWaitTimer.elapsed() > 5) {
-    restart();
-    return;
-  }
-
   m_rocket.update(m_gameData, deltaTime);
   m_obstacles.update(m_rocket, deltaTime);
 
   if (m_gameData.m_state == State::Playing) {
     checkCollisions();
-    // checkWinCondition();
+    updateScore();
   }
 }
 
@@ -87,26 +83,57 @@ void OpenGLWindow::paintGL() {
 void OpenGLWindow::paintUI() {
   abcg::OpenGLWindow::paintUI();
 
-  {
-    const auto size{ImVec2(300, 85)};
+  // Game has ended
+  if (m_gameData.m_state == State::GameOver ||
+      m_gameData.m_state == State::Win) {
+    const auto size{ImVec2(300, 450)};
     const auto position{ImVec2((m_viewportWidth - size.x) / 2.0f,
                                (m_viewportHeight - size.y) / 2.0f)};
+
     ImGui::SetNextWindowPos(position);
     ImGui::SetNextWindowSize(size);
     ImGuiWindowFlags flags{ImGuiWindowFlags_NoBackground |
-                           ImGuiWindowFlags_NoTitleBar |
-                           ImGuiWindowFlags_NoInputs};
+                           ImGuiWindowFlags_NoTitleBar};
     ImGui::Begin(" ", nullptr, flags);
     ImGui::PushFont(m_font);
 
     if (m_gameData.m_state == State::GameOver) {
-      ImGui::Text("Game Over!");
+      ImGui::Text(
+          fmt::format("Game Over!\n Score {}", m_gameData.score).c_str());
+      ImGui::Button("Restart", ImVec2(300, 80));
+
+      bool click = ImGui::IsItemClicked();
+      if (click) restart();
+
     } else if (m_gameData.m_state == State::Win) {
       ImGui::Text("*You Win!*");
     }
 
-    auto numObstacles{m_obstacles.m_obstacles.size()};
-    //ImGui::Text(fmt::format("{}", numObstacles).c_str());
+    ImGui::PopFont();
+    ImGui::End();
+  } else {  // Game is going
+
+    const auto size{ImVec2(300, 85)};
+    ImGui::SetNextWindowPos(
+        ImVec2(m_viewportWidth - size.x + 200, m_viewportHeight - size.y));
+
+    ImGui::SetNextWindowSize(size);
+    ImGuiWindowFlags flags{ImGuiWindowFlags_NoBackground |
+                           ImGuiWindowFlags_NoTitleBar |
+                           ImGuiWindowFlags_NoInputs};
+
+    ImGui::Begin(" ", nullptr, flags);
+    ImGui::PushFont(m_font);
+
+    if (m_gameData.m_state == State::GameOver) {
+      ImGui::Text(fmt::format("{}", m_gameData.score).c_str());
+      ImGui::Button("Restart", ImVec2(80, 25));
+
+    } else if (m_gameData.m_state == State::Win) {
+      ImGui::Text("*You Win!*");
+    }
+
+    ImGui::Text(fmt::format("{}", m_gameData.score).c_str());
 
     ImGui::PopFont();
     ImGui::End();
@@ -136,7 +163,13 @@ void OpenGLWindow::checkCollisions() {
 
     if (distance < m_rocket.m_scale * 0.45f + obstacle.m_scale * 0.85f) {
       m_gameData.m_state = State::GameOver;
-      m_restartWaitTimer.restart();
     }
+  }
+}
+
+void OpenGLWindow::updateScore() {
+  int gameTime = m_gameTime.elapsed();
+  if (gameTime > 1) {
+    m_gameData.score = gameTime - 1;
   }
 }

@@ -31,6 +31,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   Obstacles m_obstacles;
 
   abcg::ElapsedTimer m_restartWaitTimer;
+  abcg::ElapsedTimer m_gameTime;
 
   ImFont* m_font{};
 
@@ -41,6 +42,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   void restart();
   void update();
+  void updateScore();
 };
 
 #endif
