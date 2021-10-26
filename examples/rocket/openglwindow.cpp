@@ -14,6 +14,7 @@ void OpenGLWindow::handleEvent(SDL_Event& event) {
     if (event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
       m_gameData.m_input.set(static_cast<size_t>(Input::Right));
   }
+
   if (event.type == SDL_KEYUP) {
     if (event.key.keysym.sym == SDLK_SPACE)
       m_gameData.m_input.reset(static_cast<size_t>(Input::Sprint));
@@ -54,6 +55,10 @@ void OpenGLWindow::restart() {
 
   m_gameData.m_state = State::Playing;
   m_gameData.score = 0;
+
+  m_gameData.m_input.reset(static_cast<size_t>(Input::Sprint));
+  m_gameData.m_input.reset(static_cast<size_t>(Input::Left));
+  m_gameData.m_input.reset(static_cast<size_t>(Input::Right));
 
   m_rocket.initializeGL(m_program);
   m_obstacles.initializeGL(m_program);
@@ -125,14 +130,6 @@ void OpenGLWindow::paintUI() {
 
     ImGui::Begin(" ", nullptr, flags);
     ImGui::PushFont(m_font);
-
-    if (m_gameData.m_state == State::GameOver) {
-      ImGui::Text(fmt::format("{}", m_gameData.score).c_str());
-      ImGui::Button("Restart", ImVec2(80, 25));
-
-    } else if (m_gameData.m_state == State::Win) {
-      ImGui::Text("*You Win!*");
-    }
 
     ImGui::Text(fmt::format("{}", m_gameData.score).c_str());
 
