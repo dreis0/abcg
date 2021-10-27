@@ -17,7 +17,7 @@ void Obstacles::initializeGL(GLuint program) {
 
   // Create obstacles
   m_obstacles.clear();
-  std::uniform_int_distribution<int> range(0,3);
+  std::uniform_int_distribution<int> range(0, 3);
   m_obstacles.resize(range(m_randomEngine));
 
   for (auto &obstacle : m_obstacles) {
@@ -74,8 +74,8 @@ void Obstacles::update(const Rocket &rocket, float deltaTime) {
   }
 
   // discard objects that are out of the screen
-  m_obstacles.remove_if([](const Obstacles::Obstacle &x) {
-    return x.m_translation.y < -1.3f; });
+  m_obstacles.remove_if(
+      [](const Obstacles::Obstacle &x) { return x.m_translation.y < -1.3f; });
 }
 
 Obstacles::Obstacle Obstacles::createObstacle() {
