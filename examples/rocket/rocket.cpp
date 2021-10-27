@@ -158,7 +158,7 @@ void Rocket::update(const GameData &gameData, float deltaTime) {
     m_velocity.y += m_acceleration * deltaTime;
     m_accelerationCoolDown.restart();
 
-    // remove acceleration if rocket is above default speed
+    // remove acceleration if rocket is' above default speed
   } else if (m_accelerationCoolDown.elapsed() > 50.0 / 1000.0 &&
              m_velocity.y >= 0) {
     m_velocity.y -= m_acceleration * deltaTime;

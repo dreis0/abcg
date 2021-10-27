@@ -54,7 +54,7 @@ void OpenGLWindow::restart() {
   m_gameTime.restart();
 
   m_gameData.m_state = State::Playing;
-  m_gameData.score = 0;
+  m_gameData.m_score = 0;
 
   m_gameData.m_input.reset(static_cast<size_t>(Input::Sprint));
   m_gameData.m_input.reset(static_cast<size_t>(Input::Left));
@@ -62,6 +62,7 @@ void OpenGLWindow::restart() {
 
   m_rocket.initializeGL(m_program);
   m_obstacles.initializeGL(m_program);
+  m_scoresStars.initializeGL(m_program);
 }
 
 void OpenGLWindow::update() {
@@ -69,6 +70,7 @@ void OpenGLWindow::update() {
 
   m_rocket.update(m_gameData, deltaTime);
   m_obstacles.update(m_rocket, deltaTime);
+  m_scoresStars.update(m_rocket);
 
   if (m_gameData.m_state == State::Playing) {
     checkCollisions();
@@ -84,6 +86,7 @@ void OpenGLWindow::paintGL() {
 
   m_rocket.paintGL(m_gameData);
   m_obstacles.paintGL();
+  m_scoresStars.paintGL();
 }
 
 void OpenGLWindow::paintUI() {
@@ -105,7 +108,7 @@ void OpenGLWindow::paintUI() {
 
     if (m_gameData.m_state == State::GameOver) {
       ImGui::Text(
-          fmt::format("Game Over!\n Score {}", m_gameData.score).c_str());
+          fmt::format("Game Over!\n Score {}", m_gameData.m_score).c_str());
       ImGui::Button("Restart", ImVec2(300, 80));
 
       bool click = ImGui::IsItemClicked();
@@ -131,7 +134,8 @@ void OpenGLWindow::paintUI() {
     ImGui::Begin(" ", nullptr, flags);
     ImGui::PushFont(m_font);
 
-    ImGui::Text(fmt::format("{}", m_gameData.score).c_str());
+    ImGui::Text(fmt::format("{}", m_gameData.m_score).c_str());
+    // ImGui::Text(fmt::format("{}", m_gameTime.elapsed()).c_str());
 
     ImGui::PopFont();
     ImGui::End();
@@ -150,10 +154,11 @@ void OpenGLWindow::terminateGL() {
 
   m_rocket.terminateGL();
   m_obstacles.terminateGL();
+  m_scoresStars.terminateGL();
 }
 
 void OpenGLWindow::checkCollisions() {
-  // Check collision between ship and asteroids
+  // Check collision between rocket and obstacles
   for (const auto& obstacle : m_obstacles.m_obstacles) {
     const auto obstacleTranslation{obstacle.m_translation};
     const auto distance{
@@ -163,16 +168,31 @@ void OpenGLWindow::checkCollisions() {
       m_gameData.m_state = State::GameOver;
     }
   }
+
+  // Check colisions between rocket and score stars
+  for (auto& star : m_scoresStars.m_stars) {
+    const auto translation{star.m_translation};
+    const auto distance{glm::distance(m_rocket.m_translation, translation)};
+
+    if (distance < m_rocket.m_scale * 0.45f + star.m_scale * 0.85f) {
+      m_gameData.m_score += 20;
+      star.m_hit = true;
+    }
+  }
+
+  // Remove start that where collected from screen
+  m_scoresStars.m_stars.remove_if(
+      [](const ScoreStars::ScoreStar& x) { return x.m_hit; });
 }
 
 void OpenGLWindow::updateScore() {
   double gameTime = m_gameTime.elapsed();
   if (gameTime > 1) {
     m_gameTime.restart();
-    m_gameData.score += 1;
+    m_gameData.m_score += 1;
 
     // Give bonus score for accelerating
     int bonus = (int)abs(m_rocket.m_velocity.y * 1500);
-    m_gameData.score += bonus;
+    m_gameData.m_score += bonus;
   }
 }

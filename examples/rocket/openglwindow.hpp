@@ -10,6 +10,7 @@
 #include "gamedata.hpp"
 #include "rocket.hpp"
 #include "obstacles.hpp"
+#include "scorestars.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
@@ -29,6 +30,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GameData m_gameData;
   Rocket m_rocket;
   Obstacles m_obstacles;
+  ScoreStars m_scoresStars;
 
   abcg::ElapsedTimer m_restartWaitTimer;
   abcg::ElapsedTimer m_gameTime;
@@ -38,7 +40,6 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   std::default_random_engine m_randomEngine;
 
   void checkCollisions();
-  void checkWinCondition();
 
   void restart();
   void update();

@@ -10,7 +10,7 @@ struct GameData {
   State m_state{State::Playing};
   std::bitset<3> m_input;  // [right, left, fire]
 
-  int score;
+  int m_score;
 };
 
 #endif
