@@ -15,20 +15,10 @@ jobs:
 
       # Enable emscripten
       - name: Pull emscripten
-        run: git clone https://github.com/emscripten-core/emsdk.git
-
-      - name: Install emscripten
-        run: ./emsdk/emsdk install latest
-
-      - name: Activate emscripten
-        run: ./emsdk/emsdk activate latest
-
-      - name: Enable emscripten env variable
-        run: source .emsdk/emsdk_env.sh
-
-      # Run web server listener script
-      - name: Build application
-        run: ./build-wasm.sh
+        run: git clone https://github.com/emscripten-core/emsdk.git 
+        
+      - name: Build web assembly 
+        run: ./emsdk/emsdk install latest && ./emsdk/emsdk activate latest && source ./emsdk/emsdk_env.sh && ./runweb.sh
 
       # Publish the website
       - name: GitHub Pages action
@@ -36,7 +26,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3.6.1
         with:
           github_token: ${{ secrets.PUBLISH_TOKEN }}
-          publish_branch: gh-pages-ativ-1
+          publish_branch: atividade-1
           publish_dir: ./public
           allow_empty_commit: false
           keep_files: false

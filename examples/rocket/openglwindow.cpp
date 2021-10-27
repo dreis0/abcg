@@ -192,7 +192,7 @@ void OpenGLWindow::updateScore() {
     m_gameData.m_score += 1;
 
     // Give bonus score for accelerating
-    int bonus = (int)abs(m_rocket.m_velocity.y * 1500);
+    int bonus = (int)abs(m_rocket.m_velocity.y / m_rocket.m_acceleration);
     m_gameData.m_score += bonus;
   }
 }
