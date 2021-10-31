@@ -95,11 +95,11 @@ Obstacles::Obstacle Obstacles::createObstacle() {
   std::uniform_int_distribution<int> randomSides(6, 20);
   obstacle.m_polygonSides = randomSides(re);
 
-  // Choose a random color (actually, a grayscale)
-  std::uniform_real_distribution<float> randomIntensity_low(0.0f, 0.5f);
-  std::uniform_real_distribution<float> randomIntensity_high(0.5f, 1.0f);
+  // Choose a random color
+  std::uniform_real_distribution<float> randomIntensity_low(0.1f, 0.5f);
+  std::uniform_real_distribution<float> randomIntensity_high(0.5f, 0.8f);
   const glm::vec4 color{randomIntensity_low(re), randomIntensity_high(re),
-                        randomIntensity_high(re), randomIntensity_high(re)};
+                        randomIntensity_high(re), randomIntensity_low(re)};
   obstacle.m_color = color;
   // obstacle.m_color = glm::vec4(1) * randomIntensity(re);
 
