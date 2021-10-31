@@ -54,7 +54,8 @@ void Obstacles::terminateGL() {
 
 void Obstacles::update(const Rocket &rocket, float deltaTime) {
   // add new obstacles after interval
-  if (m_new_obstacle_timer.elapsed() > newObstacleInterval / 1000.0) {
+  if (m_new_obstacle_timer.elapsed() >
+      newObstacleInterval / (rocket.m_baseSpeed * 1000)) {
     m_new_obstacle_timer.restart();
     std::uniform_int_distribution<int> range(0, 2);
 

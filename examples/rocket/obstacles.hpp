@@ -26,7 +26,7 @@ class Obstacles {
   GLint m_translationLoc{};
   GLint m_scaleLoc{};
 
-  int newObstacleInterval = 350;  // miliseconds
+  float newObstacleInterval = 4;
 
   struct Obstacle {
     GLuint m_vao{};

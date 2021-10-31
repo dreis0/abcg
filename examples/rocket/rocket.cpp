@@ -147,10 +147,10 @@ void Rocket::update(const GameData &gameData, float deltaTime) {
   // Move sideways
   if (gameData.m_input[static_cast<size_t>(Input::Left)] &&
       m_translation.x > -0.92)
-    m_translation.x -= 0.0025f;
+    m_translation.x -= m_translation_speed;
   if (gameData.m_input[static_cast<size_t>(Input::Right)] &&
       m_translation.x < 0.92)
-    m_translation.x += 0.0025f;
+    m_translation.x += m_translation_speed;
 
   // Apply acceleration
   if (gameData.m_input[static_cast<size_t>(Input::Sprint)] &&
@@ -162,6 +162,8 @@ void Rocket::update(const GameData &gameData, float deltaTime) {
   } else if (m_accelerationCoolDown.elapsed() > 50.0 / 1000.0 &&
              m_velocity.y >= 0) {
     m_velocity.y -= m_acceleration * deltaTime;
-    m_velocity.y = m_velocity.y < 0 ? 0 : m_velocity.y; //prevents speed from beign negative
+    m_velocity.y = m_velocity.y < 0
+                       ? 0
+                       : m_velocity.y;  // prevents speed from beign negative
   }
 }

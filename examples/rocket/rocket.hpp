@@ -29,9 +29,10 @@ class Rocket {
   glm::vec4 m_color{1};
   float m_scale{0.125f};
   glm::vec2 m_translation{glm::vec2(0)};
+  float m_translation_speed = 0.0050f;
   glm::vec2 m_velocity{glm::vec2(0)};
   float m_acceleration = 0.0004;
-  float m_baseSpeed = 0.0012f;
+  float m_baseSpeed = 0.0050f;
 
   abcg::ElapsedTimer m_trailBlinkTimer;
   abcg::ElapsedTimer m_accelerationCoolDown;

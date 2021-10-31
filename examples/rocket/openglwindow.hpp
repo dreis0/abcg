@@ -1,16 +1,17 @@
 #ifndef OPENGLWINDOW_HPP_
 #define OPENGLWINDOW_HPP_
 
+#include <fmt/core.h>
 #include <imgui.h>
 
 #include <random>
-#include <fmt/core.h>
 
 #include "abcg.hpp"
 #include "gamedata.hpp"
-#include "rocket.hpp"
 #include "obstacles.hpp"
+#include "rocket.hpp"
 #include "scorestars.hpp"
+
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
