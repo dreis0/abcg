@@ -88,13 +88,12 @@ ScoreStars::ScoreStar ScoreStars::createScoreStar() {
   std::vector<glm::vec2> positions(0);
   std::vector<glm::vec3> colors(0);
 
-  colors.push_back(star.m_innerColor);
   positions.emplace_back(0, 0);
+  colors.push_back(star.m_innerColor);
 
   const auto step{M_PI * 2 / star.m_polygonSides};
   for (const auto angle : iter::range(0.0, M_PI * 2, step)) {
-    positions.emplace_back(star.m_radius * std::cos(angle),
-                           star.m_radius * std::sin(angle));
+    positions.emplace_back(std::cos(angle), std::sin(angle));
     colors.push_back(star.m_outterColor);
   }
 

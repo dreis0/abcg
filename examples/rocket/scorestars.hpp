@@ -34,8 +34,8 @@ class ScoreStars {
     GLuint m_vao{};
     GLuint m_vbo{};
 
-    glm::vec4 m_innerColor{1.0f, 1.0f, 1.0f, 0.50f};
-    glm::vec4 m_outterColor{1.0f, 0.91f, 0.0f, 1.0f};
+    glm::vec3 m_innerColor{1.0f, 0.0f, 0.0f};
+    glm::vec3 m_outterColor{1.0f, 0.91f, 0.0f};
     float m_scale{0.06};
     float m_radius{0.90f};
     bool m_hit = false;
