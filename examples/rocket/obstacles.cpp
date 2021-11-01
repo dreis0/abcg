@@ -1,7 +1,11 @@
 #include "obstacles.hpp"
 
+#include <fmt/core.h>
+
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
+
+#include "abcg_elapsedtimer.hpp"
 
 void Obstacles::initializeGL(GLuint program) {
   terminateGL();
@@ -52,7 +56,7 @@ void Obstacles::terminateGL() {
   }
 }
 
-void Obstacles::update(const Rocket &rocket, float deltaTime) {
+void Obstacles::update(const Rocket &rocket) {
   // add new obstacles after interval
   if (m_new_obstacle_timer.elapsed() >
       newObstacleInterval / (rocket.m_baseSpeed * 1000)) {

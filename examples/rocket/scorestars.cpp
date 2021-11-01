@@ -53,7 +53,8 @@ void ScoreStars::terminateGL() {
 
 void ScoreStars::update(const Rocket &rocket) {
   // add new obstacles after intervale
-  if (m_new_star_timer.elapsed() > newStarInterval / 1000.0) {
+  if (m_new_star_timer.elapsed() >
+      newStarInterval / (rocket.m_baseSpeed * 1000)) {
     m_new_star_timer.restart();
 
     std::uniform_real_distribution<float> m_random{0.0f, 1.0f};

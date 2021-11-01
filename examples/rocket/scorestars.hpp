@@ -27,7 +27,7 @@ class ScoreStars {
   GLint m_scaleLoc{};
   GLuint m_vboColors{};
 
-  int newStarInterval = 1515;  // miliseconds
+  float newStarInterval = 4;
   float newBonusChance = 0.2;
 
   struct ScoreStar {

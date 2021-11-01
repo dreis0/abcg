@@ -5,6 +5,7 @@
 #include <random>
 
 #include "abcg.hpp"
+#include "abcg_elapsedtimer.hpp"
 #include "gamedata.hpp"
 #include "rocket.hpp"
 
@@ -16,7 +17,7 @@ class Obstacles {
   void paintGL();
   void terminateGL();
 
-  void update(const Rocket &rocket, float deltaTime);
+  void update(const Rocket &rocket);
 
  private:
   friend OpenGLWindow;
@@ -26,7 +27,7 @@ class Obstacles {
   GLint m_translationLoc{};
   GLint m_scaleLoc{};
 
-  float newObstacleInterval = 4;
+  float newObstacleInterval = 3.5;
 
   struct Obstacle {
     GLuint m_vao{};

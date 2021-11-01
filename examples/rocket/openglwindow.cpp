@@ -55,6 +55,7 @@ void OpenGLWindow::restart() {
 
   m_gameData.m_state = State::Playing;
   m_gameData.m_score = 0;
+  m_rocket.m_baseSpeed = 0.0050f;
 
   m_gameData.m_input.reset(static_cast<size_t>(Input::Sprint));
   m_gameData.m_input.reset(static_cast<size_t>(Input::Left));
@@ -69,7 +70,7 @@ void OpenGLWindow::update() {
   const float deltaTime{static_cast<float>(getDeltaTime())};
 
   m_rocket.update(m_gameData, deltaTime);
-  m_obstacles.update(m_rocket, deltaTime);
+  m_obstacles.update(m_rocket);
   m_scoresStars.update(m_rocket);
 
   if (m_gameData.m_state == State::Playing) {
@@ -190,6 +191,7 @@ void OpenGLWindow::updateScore() {
   if (gameTime > 1) {
     m_gameTime.restart();
     m_gameData.m_score += 1;
+    m_rocket.m_baseSpeed += 0.0001f;
 
     // Give bonus score for accelerating
     int bonus = (int)abs(m_rocket.m_velocity.y / m_rocket.m_acceleration);
