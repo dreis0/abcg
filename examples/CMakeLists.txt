@@ -4,4 +4,6 @@
 # add_subdirectory(coloredtriangles)
 # add_subdirectory(jogodavelha)
 # add_subdirectory(coloredtriangles_enhanced)
-add_subdirectory(regularpolygons)
+# add_subdirectory(regularpolygons)
+# add_subdirectory(asteroids)
+add_subdirectory(rocket)

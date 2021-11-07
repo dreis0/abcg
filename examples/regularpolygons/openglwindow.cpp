@@ -165,7 +165,7 @@ void OpenGLWindow::setupModel(int sides) {
   // Generate VBO of colors
   abcg::glGenBuffers(1, &m_vboColors);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, m_vboColors);
-  abcg::glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec3),
+  abcg::glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec4),
                      colors.data(), GL_STATIC_DRAW);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
