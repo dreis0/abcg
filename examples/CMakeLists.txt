@@ -6,4 +6,5 @@
 # add_subdirectory(coloredtriangles_enhanced)
 # add_subdirectory(regularpolygons)
 # add_subdirectory(asteroids)
-add_subdirectory(rocket)
+# add_subdirectory(rocket)
+add_subdirectory(loadmodel)
