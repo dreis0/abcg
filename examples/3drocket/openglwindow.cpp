@@ -64,9 +64,9 @@ void OpenGLWindow::initializeGL() {
 
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-  m_rocket.setupVAO(m_program);
+  m_rocket.init(m_program);
   for (auto& asteroid : m_asteroids) {
-    asteroid.setupVAO(m_program);
+    asteroid.init(m_program);
   }
   
   resizeGL(getWindowSettings().width, getWindowSettings().height);

@@ -99,8 +99,9 @@ void Rocket::render(GLint m_program) const {
   // Draw rocket and set it's angle
   glm::mat4 model{1.0f};
   model = glm::mat4(1.0);
-  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0)); // (direita, cima, trás)
   model = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0, 0, 1));
+  model = glm::scale(model, glm::vec3(0.8f));
 
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(colorLoc, m_color[0], m_color[1], m_color[2], m_color[3]);
@@ -110,7 +111,7 @@ void Rocket::render(GLint m_program) const {
   abcg::glBindVertexArray(0);
 }
 
-void Rocket::setupVAO(GLuint program) {
+void Rocket::init(GLuint program) {
   // Release previous VAO
   abcg::glDeleteVertexArrays(1, &m_VAO);
 

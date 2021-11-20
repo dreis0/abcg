@@ -100,7 +100,10 @@ void Asteroid::render(GLint m_program) const {
   // Draw entity and pseudo-randomize it's position
   glm::mat4 model{1.0f};
   model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(0.7f,0.7f, 0.7f));
+  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f)); //send it forward
+  model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f)); // send it right
+  model = glm::translate(model, glm::vec3(0.0f, 0.60f, 0.0f)); // send it up
+  model = glm::scale(model, glm::vec3(0.3f));
 
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(colorLoc, m_color[0], m_color[1], m_color[2], m_color[3]);
@@ -110,7 +113,7 @@ void Asteroid::render(GLint m_program) const {
   abcg::glBindVertexArray(0);
 }
 
-void Asteroid::setupVAO(GLuint program) {
+void Asteroid::init(GLuint program) {
   // Release previous VAO
   abcg::glDeleteVertexArrays(1, &m_VAO);
 

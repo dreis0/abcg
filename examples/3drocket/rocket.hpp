@@ -10,7 +10,7 @@ class Rocket {
  public:
   void loadObj(std::string_view path, bool standardize = true);
   void render(GLint colorLoc) const;
-  void setupVAO(GLuint program);
+  void init(GLuint program);
   void terminateGL();
 
   [[nodiscard]] int getNumTriangles() const {

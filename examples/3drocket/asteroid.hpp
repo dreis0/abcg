@@ -10,7 +10,7 @@ class Asteroid {
  public:
   void loadObj(std::string_view path, bool standardize = true);
   void render(GLint colorLoc) const;
-  void setupVAO(GLuint program);
+  void init(GLuint program);
   void terminateGL();
 
   [[nodiscard]] int getNumTriangles() const {
@@ -21,6 +21,13 @@ class Asteroid {
   GLuint m_VAO{};
   GLuint m_VBO{};
   GLuint m_EBO{};
+
+  abcg::ElapsedTimer m_timer;
+
+  int m_spinDirection;
+  glm::vec3 m_direction{};
+
+  std::default_random_engine m_randomEngine;
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
