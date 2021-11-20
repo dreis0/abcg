@@ -22,7 +22,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GLuint m_program{};
 
   Rocket m_rocket{};
-  int m_qtd_asteroids{1};
+  int m_qtd_asteroids{5};
   std::list<Asteroid> m_asteroids;
 
   int m_viewportWidth{};

@@ -1,6 +1,7 @@
 #ifndef ASTEROID_HPP_
 #define ASTEROID_HPP_
 
+#include <random>
 #include <vector>
 
 #include "abcg.hpp"
@@ -25,7 +26,7 @@ class Asteroid {
   abcg::ElapsedTimer m_timer;
 
   int m_spinDirection;
-  glm::vec3 m_direction{};
+  glm::vec3 m_direction{0.0f, 0.0f, 0.0f};
 
   std::default_random_engine m_randomEngine;
 

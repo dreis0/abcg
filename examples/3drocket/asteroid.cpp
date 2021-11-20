@@ -1,12 +1,14 @@
 #include "asteroid.hpp"
 
 #include <fmt/core.h>
+#include <stdlib.h>
 #include <tiny_obj_loader.h>
 
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 
+#include "abcg.hpp"
 #include "vertex.hpp"
 
 void Asteroid::createBuffers() {
@@ -97,13 +99,17 @@ void Asteroid::render(GLint m_program) const {
       abcg::glGetUniformLocation(m_program, "modelMatrix")};
   const GLint colorLoc{abcg::glGetUniformLocation(m_program, "color")};
 
-  // Draw entity and pseudo-randomize it's position
+  // Determine entity's intial position
   glm::mat4 model{1.0f};
   model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f)); //send it forward
-  model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f)); // send it right
-  model = glm::translate(model, glm::vec3(0.0f, 0.60f, 0.0f)); // send it up
+  model = glm::translate(model, m_direction);  // send it forward
   model = glm::scale(model, glm::vec3(0.3f));
+
+  // Move entity throughout the scene
+  float elapsedTime = (float)m_timer.elapsed();
+  // model = glm::translate(model, (m_direction + elapsedTime));
+  model =
+      glm::rotate(model, glm::radians(5.0f) * elapsedTime, glm::vec3(0, 1, 0));
 
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(colorLoc, m_color[0], m_color[1], m_color[2], m_color[3]);
@@ -114,6 +120,17 @@ void Asteroid::render(GLint m_program) const {
 }
 
 void Asteroid::init(GLuint program) {
+  m_randomEngine.seed(
+      std::chrono::steady_clock::now().time_since_epoch().count());
+
+  std::uniform_real_distribution<float> range(-1.0f, 1.0f);
+  m_spinDirection = range(m_randomEngine);
+
+  m_direction = glm::vec3(range(m_randomEngine), range(m_randomEngine),
+                          range(m_randomEngine));
+
+  m_timer.restart();
+
   // Release previous VAO
   abcg::glDeleteVertexArrays(1, &m_VAO);
 

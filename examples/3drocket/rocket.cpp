@@ -1,5 +1,4 @@
 #include "rocket.hpp"
-#include "vertex.hpp"
 
 #include <fmt/core.h>
 #include <tiny_obj_loader.h>
@@ -7,6 +6,8 @@
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
+
+#include "vertex.hpp"
 
 void Rocket::createBuffers() {
   // Delete previous buffers
@@ -99,7 +100,8 @@ void Rocket::render(GLint m_program) const {
   // Draw rocket and set it's angle
   glm::mat4 model{1.0f};
   model = glm::mat4(1.0);
-  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0)); // (direita, cima, trás)
+  model = glm::rotate(model, glm::radians(-90.0f),
+                      glm::vec3(0, 1, 0));  // (direita, cima, trás)
   model = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0, 0, 1));
   model = glm::scale(model, glm::vec3(0.8f));
 
