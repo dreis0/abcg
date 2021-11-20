@@ -8,5 +8,6 @@
 # add_subdirectory(asteroids)
 # add_subdirectory(rocket)
 # add_subdirectory(loadmodel)
-add_subdirectory(viewer1)
-add_subdirectory(lookat)
+# add_subdirectory(viewer1)
+# add_subdirectory(lookat)
+add_subdirectory(3drocket)
