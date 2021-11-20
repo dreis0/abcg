@@ -2,8 +2,10 @@
 #define OPENGLWINDOW_HPP_
 
 #include <vector>
+#include <list>
 
 #include "abcg.hpp"
+#include "asteroid.hpp"
 #include "camera.hpp"
 #include "rocket.hpp"
 
@@ -20,6 +22,8 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GLuint m_program{};
 
   Rocket m_rocket{};
+  int m_qtd_asteroids{1};
+  std::list<Asteroid> m_asteroids;
 
   int m_viewportWidth{};
   int m_viewportHeight{};

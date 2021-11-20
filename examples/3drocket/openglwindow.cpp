@@ -9,17 +9,6 @@
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 
-// Explicit specialization of std::hash for Vertex
-namespace std {
-template <>
-struct hash<Vertex> {
-  size_t operator()(Vertex const& vertex) const noexcept {
-    const std::size_t h1{std::hash<glm::vec3>()(vertex.position)};
-    return h1;
-  }
-};
-}  // namespace std
-
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
   if (ev.type == SDL_KEYDOWN) {
     if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w)
@@ -63,13 +52,23 @@ void OpenGLWindow::initializeGL() {
 
   // m_ground.initializeGL(m_program);
 
-  // Load model
+  // Load rocket
   m_rocket.loadObj(getAssetsPath() + "rocket.obj");
+
+  // Load asteroids
+  m_asteroids.resize(m_qtd_asteroids);
+
+  for (auto& asteroid : m_asteroids) {
+    asteroid.loadObj(getAssetsPath() + "asteroid.obj");
+  }
 
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_rocket.setupVAO(m_program);
-
+  for (auto& asteroid : m_asteroids) {
+    asteroid.setupVAO(m_program);
+  }
+  
   resizeGL(getWindowSettings().width, getWindowSettings().height);
 }
 
@@ -88,7 +87,7 @@ void OpenGLWindow::paintGL() {
       abcg::glGetUniformLocation(m_program, "viewMatrix")};
   const GLint projMatrixLoc{
       abcg::glGetUniformLocation(m_program, "projMatrix")};
-  
+
   // Set uniform variables for viewMatrix and projMatrix
   // These matrices are used for every scene object
   abcg::glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE,
@@ -97,6 +96,9 @@ void OpenGLWindow::paintGL() {
                            &m_camera.m_projMatrix[0][0]);
 
   m_rocket.render(m_program);
+  for (auto& asteroid : m_asteroids) {
+    asteroid.render(m_program);
+  }
 
   abcg::glUseProgram(0);
 }
@@ -114,6 +116,10 @@ void OpenGLWindow::terminateGL() {
   abcg::glDeleteProgram(m_program);
 
   m_rocket.terminateGL();
+  for (auto& asteroid : m_asteroids) {
+    asteroid.terminateGL();
+  }
+  m_asteroids.clear();
 }
 
 void OpenGLWindow::update() {

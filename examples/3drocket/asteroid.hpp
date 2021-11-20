@@ -1,12 +1,12 @@
-#ifndef ROCKET_HPP_
-#define ROCKET_HPP_
+#ifndef ASTEROID_HPP_
+#define ASTEROID_HPP_
 
 #include <vector>
 
 #include "abcg.hpp"
 #include "vertex.hpp"
 
-class Rocket {
+class Asteroid {
  public:
   void loadObj(std::string_view path, bool standardize = true);
   void render(GLint colorLoc) const;

@@ -1,3 +1,3 @@
 project(3drocket)
-add_executable(${PROJECT_NAME} camera.cpp main.cpp openglwindow.cpp rocket.cpp vertex.cpp)
+add_executable(${PROJECT_NAME} vertex.hpp camera.cpp main.cpp rocket.cpp openglwindow.cpp asteroid.cpp)
 enable_abcg(${PROJECT_NAME})

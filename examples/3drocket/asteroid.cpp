@@ -1,5 +1,4 @@
-#include "rocket.hpp"
-#include "vertex.hpp"
+#include "asteroid.hpp"
 
 #include <fmt/core.h>
 #include <tiny_obj_loader.h>
@@ -8,7 +7,9 @@
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 
-void Rocket::createBuffers() {
+#include "vertex.hpp"
+
+void Asteroid::createBuffers() {
   // Delete previous buffers
   abcg::glDeleteBuffers(1, &m_EBO);
   abcg::glDeleteBuffers(1, &m_VBO);
@@ -29,7 +30,7 @@ void Rocket::createBuffers() {
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Rocket::loadObj(std::string_view path, bool standardize) {
+void Asteroid::loadObj(std::string_view path, bool standardize) {
   tinyobj::ObjReader reader;
 
   if (!reader.ParseFromFile(path.data())) {
@@ -89,18 +90,17 @@ void Rocket::loadObj(std::string_view path, bool standardize) {
   createBuffers();
 }
 
-void Rocket::render(GLint m_program) const {
+void Asteroid::render(GLint m_program) const {
   abcg::glBindVertexArray(m_VAO);
 
   const GLint modelMatrixLoc{
       abcg::glGetUniformLocation(m_program, "modelMatrix")};
   const GLint colorLoc{abcg::glGetUniformLocation(m_program, "color")};
 
-  // Draw rocket and set it's angle
+  // Draw entity and pseudo-randomize it's position
   glm::mat4 model{1.0f};
   model = glm::mat4(1.0);
-  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  model = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0, 0, 1));
+  model = glm::translate(model, glm::vec3(0.7f,0.7f, 0.7f));
 
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(colorLoc, m_color[0], m_color[1], m_color[2], m_color[3]);
@@ -110,7 +110,7 @@ void Rocket::render(GLint m_program) const {
   abcg::glBindVertexArray(0);
 }
 
-void Rocket::setupVAO(GLuint program) {
+void Asteroid::setupVAO(GLuint program) {
   // Release previous VAO
   abcg::glDeleteVertexArrays(1, &m_VAO);
 
@@ -136,7 +136,7 @@ void Rocket::setupVAO(GLuint program) {
   abcg::glBindVertexArray(0);
 }
 
-void Rocket::standardize() {
+void Asteroid::standardize() {
   // Center to origin and normalize largest bound to [-1, 1]
 
   // Get bounds
@@ -159,7 +159,7 @@ void Rocket::standardize() {
   }
 }
 
-void Rocket::terminateGL() {
+void Asteroid::terminateGL() {
   abcg::glDeleteBuffers(1, &m_EBO);
   abcg::glDeleteBuffers(1, &m_VBO);
   abcg::glDeleteVertexArrays(1, &m_VAO);
