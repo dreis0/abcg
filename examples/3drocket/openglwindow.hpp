@@ -1,7 +1,6 @@
 #ifndef OPENGLWINDOW_HPP_
 #define OPENGLWINDOW_HPP_
 
-#include <vector>
 #include <list>
 
 #include "abcg.hpp"
@@ -23,7 +22,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   Rocket m_rocket{};
   int m_qtd_asteroids{32};
-  std::vector<Asteroid> m_asteroids;
+  std::list<Asteroid> m_asteroids;
 
   int m_viewportWidth{};
   int m_viewportHeight{};
@@ -32,9 +31,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   float m_dollySpeed{0.0f};
   float m_truckSpeed{0.0f};
   float m_panSpeed{0.0f};
-
-  std::vector<Vertex> m_vertices;
-  std::vector<GLuint> m_indices;
+  float m_yMovement{0.0f};
 
   void update();
 };

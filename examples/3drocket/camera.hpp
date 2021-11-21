@@ -14,6 +14,7 @@ class Camera {
   void dolly(float speed);
   void truck(float speed);
   void pan(float speed);
+  void moveY(float movement);
 
  private:
   friend OpenGLWindow;

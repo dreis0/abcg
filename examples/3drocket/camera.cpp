@@ -48,3 +48,9 @@ void Camera::pan(float speed) {
 
   computeViewMatrix();
 }
+
+void Camera::moveY(float movement){
+  m_at.y += movement;
+
+  computeViewMatrix();
+}

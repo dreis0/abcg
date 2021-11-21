@@ -7,7 +7,6 @@
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 #include <glm/gtx/hash.hpp>
-#include <iostream>
 #include <string>
 #include <unordered_map>
 
@@ -24,6 +23,7 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
     if (ev.key.keysym.sym == SDLK_q) m_truckSpeed = -1.0f;
     if (ev.key.keysym.sym == SDLK_e) m_truckSpeed = 1.0f;
   }
+
   if (ev.type == SDL_KEYUP) {
     if ((ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) &&
         m_dollySpeed > 0)
@@ -40,6 +40,13 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
     if (ev.key.keysym.sym == SDLK_q && m_truckSpeed < 0) m_truckSpeed = 0.0f;
     if (ev.key.keysym.sym == SDLK_e && m_truckSpeed > 0) m_truckSpeed = 0.0f;
   }
+
+  if (ev.type == SDL_MOUSEWHEEL) {
+    m_yMovement += (ev.wheel.y > 0 ? 1.0f : -1.0f) * 0.01;
+    m_yMovement = glm::clamp(m_yMovement, -2.5f, 2.5f);
+  } else {
+    m_yMovement = 0;
+  }
 }
 
 void OpenGLWindow::initializeGL() {
@@ -52,8 +59,6 @@ void OpenGLWindow::initializeGL() {
   m_program = createProgramFromFile(getAssetsPath() + "lookat.vert",
                                     getAssetsPath() + "lookat.frag");
 
-  // m_ground.initializeGL(m_program);
-
   // Load rocket
   m_rocket.loadObj(getAssetsPath() + "rocket.obj");
 
@@ -65,7 +70,6 @@ void OpenGLWindow::initializeGL() {
     auto filename{getAssetsPath() + "asteroid" + std::to_string((idx % 3) + 1) +
                   ".obj"};
 
-    std::cout << filename << "\n";
     asteroid.loadObj(filename);
     idx++;
   }
@@ -137,4 +141,5 @@ void OpenGLWindow::update() {
   m_camera.dolly(m_dollySpeed * deltaTime);
   m_camera.truck(m_truckSpeed * deltaTime);
   m_camera.pan(m_panSpeed * deltaTime);
+  m_camera.moveY(m_yMovement * deltaTime);
 }
