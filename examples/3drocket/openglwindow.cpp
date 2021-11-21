@@ -60,13 +60,14 @@ void OpenGLWindow::initializeGL() {
   // Load asteroids
   m_asteroids.resize(m_qtd_asteroids);
 
-  for (int i = 0; i < m_qtd_asteroids; i++) {
-    Asteroid asteroid = m_asteroids[i];
-    auto filename{getAssetsPath() + "asteroid" + std::to_string((i % 3) + 1) +
+  int idx = 0;
+  for (auto& asteroid : m_asteroids) {
+    auto filename{getAssetsPath() + "asteroid" + std::to_string((idx % 3) + 1) +
                   ".obj"};
 
     std::cout << filename << "\n";
     asteroid.loadObj(filename);
+    idx++;
   }
 
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
