@@ -102,14 +102,14 @@ void Asteroid::render(GLint m_program) const {
   // Determine entity's intial position
   glm::mat4 model{1.0f};
   model = glm::mat4(1.0);
-  model = glm::translate(model, m_direction);  // send it forward
+  model = glm::translate(model, m_initialPosition);
   model = glm::scale(model, glm::vec3(0.3f));
 
   // Move entity throughout the scene
   float elapsedTime = (float)m_timer.elapsed();
-  // model = glm::translate(model, (m_direction + elapsedTime));
+  model = glm::translate(model, m_direction * (elapsedTime / 12));
   model =
-      glm::rotate(model, glm::radians(5.0f) * elapsedTime, glm::vec3(0, 1, 0));
+      glm::rotate(model, glm::radians(12.0f) * elapsedTime, m_spinDirection);
 
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
   abcg::glUniform4f(colorLoc, m_color[0], m_color[1], m_color[2], m_color[3]);
@@ -123,11 +123,19 @@ void Asteroid::init(GLuint program) {
   m_randomEngine.seed(
       std::chrono::steady_clock::now().time_since_epoch().count());
 
-  std::uniform_real_distribution<float> range(-1.0f, 1.0f);
-  m_spinDirection = range(m_randomEngine);
+  std::uniform_int_distribution<int> rangeSpin(-10, 10);
+  m_spinDirection =
+      glm::vec3(rangeSpin(m_randomEngine) % 2, rangeSpin(m_randomEngine) % 2,
+                rangeSpin(m_randomEngine) % 2);
 
-  m_direction = glm::vec3(range(m_randomEngine), range(m_randomEngine),
-                          range(m_randomEngine));
+
+  std::uniform_real_distribution<float> rangePosition(-2.0f, 2.0f);
+  m_initialPosition = glm::vec3(rangePosition(m_randomEngine), rangePosition(m_randomEngine),
+                                rangePosition(m_randomEngine));
+
+  std::uniform_real_distribution<float> rangeDirection(-1.0f, 1.0f);
+  m_direction = glm::vec3(rangeDirection(m_randomEngine), rangeDirection(m_randomEngine),
+                          rangeDirection(m_randomEngine));
 
   m_timer.restart();
 

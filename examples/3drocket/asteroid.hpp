@@ -25,7 +25,8 @@ class Asteroid {
 
   abcg::ElapsedTimer m_timer;
 
-  int m_spinDirection;
+  glm::vec3 m_spinDirection{0, 0, 0};
+  glm::vec3 m_initialPosition{0.0f, 0.0f, 0.0f};
   glm::vec3 m_direction{0.0f, 0.0f, 0.0f};
 
   std::default_random_engine m_randomEngine;
