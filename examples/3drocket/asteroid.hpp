@@ -10,7 +10,7 @@
 class Asteroid {
  public:
   void loadObj(std::string_view path, bool standardize = true);
-  void render(GLint colorLoc) const;
+  void render(GLint program) const;
   void init(GLuint program);
   void terminateGL();
 

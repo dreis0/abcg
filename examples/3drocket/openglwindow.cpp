@@ -7,6 +7,8 @@
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 #include <glm/gtx/hash.hpp>
+#include <iostream>
+#include <string>
 #include <unordered_map>
 
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
@@ -58,8 +60,13 @@ void OpenGLWindow::initializeGL() {
   // Load asteroids
   m_asteroids.resize(m_qtd_asteroids);
 
-  for (auto& asteroid : m_asteroids) {
-    asteroid.loadObj(getAssetsPath() + "asteroid.obj");
+  for (int i = 0; i < m_qtd_asteroids; i++) {
+    Asteroid asteroid = m_asteroids[i];
+    auto filename{getAssetsPath() + "asteroid" + std::to_string((i % 3) + 1) +
+                  ".obj"};
+
+    std::cout << filename << "\n";
+    asteroid.loadObj(filename);
   }
 
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -68,7 +75,7 @@ void OpenGLWindow::initializeGL() {
   for (auto& asteroid : m_asteroids) {
     asteroid.init(m_program);
   }
-  
+
   resizeGL(getWindowSettings().width, getWindowSettings().height);
 }
 

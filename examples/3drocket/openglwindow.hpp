@@ -23,7 +23,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   Rocket m_rocket{};
   int m_qtd_asteroids{32};
-  std::list<Asteroid> m_asteroids;
+  std::vector<Asteroid> m_asteroids;
 
   int m_viewportWidth{};
   int m_viewportHeight{};
