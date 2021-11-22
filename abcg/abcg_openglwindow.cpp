@@ -302,8 +302,9 @@ GLuint abcg::OpenGLWindow::createProgramFromFile(
         "Failed to read fragment shader file {}", pathToFragmentShader))};
   }
 
-  return createProgramFromString(vertexShaderSource.str(),
-                                 fragmentShaderSource.str());
+  return createProgramFromString(vertexShaderSource.str() + '\0',
+                                 fragmentShaderSource.str()) +
+         '\0';
 }
 
 GLuint abcg::OpenGLWindow::createProgramFromString(

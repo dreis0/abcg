@@ -65,6 +65,10 @@ void OpenGLWindow::initializeGL() {
   // Load asteroids
   m_asteroids.resize(m_qtd_asteroids);
 
+  // Load star
+  m_model.loadObj(getAssetsPath() + "asteroid1.obj");
+  m_model.setupVAO(m_program);
+
   int idx = 0;
   for (auto& asteroid : m_asteroids) {
     auto filename{getAssetsPath() + "asteroid" + std::to_string((idx % 3) + 1) +
@@ -81,7 +85,33 @@ void OpenGLWindow::initializeGL() {
     asteroid.init(m_program);
   }
 
+  // Setup stars
+  for (const auto index : iter::range(m_numStars)) {
+    auto& position{m_starPositions.at(index)};
+    auto& rotation{m_starRotations.at(index)};
+
+    randomizeStar(position, rotation);
+  }
+
   resizeGL(getWindowSettings().width, getWindowSettings().height);
+}
+
+void OpenGLWindow::randomizeStar(glm::vec3& position, glm::vec3& rotation) {
+  // Get random position
+  // x and y coordinates in the range [-8, 8]
+  // z coordinates in the range [-100, 50]
+  std::uniform_real_distribution<float> distPosXY(-8.0f, 8.0f);
+  std::uniform_real_distribution<float> distPosZ(-50.0f, 50.0f);
+
+  position = glm::vec3(distPosXY(m_randomEngine), distPosXY(m_randomEngine),
+                       distPosZ(m_randomEngine));
+
+  //  Get random rotation axis
+  std::uniform_real_distribution<float> distRotAxis(-1.0f, 1.0f);
+
+  rotation = glm::normalize(glm::vec3(distRotAxis(m_randomEngine),
+                                      distRotAxis(m_randomEngine),
+                                      distRotAxis(m_randomEngine)));
 }
 
 void OpenGLWindow::paintGL() {
@@ -99,6 +129,9 @@ void OpenGLWindow::paintGL() {
       abcg::glGetUniformLocation(m_program, "viewMatrix")};
   const GLint projMatrixLoc{
       abcg::glGetUniformLocation(m_program, "projMatrix")};
+  const GLint modelMatrixLoc{
+      abcg::glGetUniformLocation(m_program, "modelMatrix")};
+  const GLint colorLoc{abcg::glGetUniformLocation(m_program, "color")};
 
   // Set uniform variables for viewMatrix and projMatrix
   // These matrices are used for every scene object
@@ -106,10 +139,28 @@ void OpenGLWindow::paintGL() {
                            &m_camera.m_viewMatrix[0][0]);
   abcg::glUniformMatrix4fv(projMatrixLoc, 1, GL_FALSE,
                            &m_camera.m_projMatrix[0][0]);
+  abcg::glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);  // White
 
   m_rocket.render(m_program);
   for (auto& asteroid : m_asteroids) {
     asteroid.render(m_program);
+  }
+
+  // Render each star
+  for (const auto index : iter::range(m_numStars)) {
+    const auto& position{m_starPositions.at(index)};
+    const auto& rotation{m_starRotations.at(index)};
+
+    // Compute model matrix of the current star
+    glm::mat4 modelMatrix{1.0f};
+    modelMatrix = glm::translate(modelMatrix, position);
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f));
+    modelMatrix = glm::rotate(modelMatrix, m_angle, rotation);
+
+    // Set uniform variable
+    abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &modelMatrix[0][0]);
+
+    m_model.render();
   }
 
   abcg::glUseProgram(0);
@@ -125,6 +176,7 @@ void OpenGLWindow::resizeGL(int width, int height) {
 }
 
 void OpenGLWindow::terminateGL() {
+  m_model.terminateGL();
   abcg::glDeleteProgram(m_program);
 
   m_rocket.terminateGL();
@@ -136,10 +188,27 @@ void OpenGLWindow::terminateGL() {
 
 void OpenGLWindow::update() {
   const float deltaTime{static_cast<float>(getDeltaTime())};
+  m_angle = glm::wrapAngle(m_angle + glm::radians(90.0f) * deltaTime);
 
   // Update LookAt camera
   m_camera.dolly(m_dollySpeed * deltaTime);
   m_camera.truck(m_truckSpeed * deltaTime);
   m_camera.pan(m_panSpeed * deltaTime);
   m_camera.moveY(m_yMovement * deltaTime);
+
+  // Update stars
+  for (const auto index : iter::range(m_numStars)) {
+    auto& position{m_starPositions.at(index)};
+    auto& rotation{m_starRotations.at(index)};
+
+    // Z coordinate increases by 4 units per second
+    position.z += deltaTime * 4.0f;
+
+    // If this star is behind the camera, select a new random position and
+    // orientation, and move it back to -50
+    if (position.z > 50.0f) {
+      randomizeStar(position, rotation);
+      position.z = -50.0f;  // Back to -50
+    }
+  }
 }

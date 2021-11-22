@@ -1,7 +1,7 @@
 # Wavefront Obj file
 # 
 # verts: 1316 uv-s: 1627
-mtllib rock_by_dommk.mtl
+# mtllib rock_by_dommk.mtl
 
 g rock
 #pivot 0.000000 0.000000 0.000000
@@ -4271,7 +4271,7 @@ vn -0.063898 -0.097157 -0.993216
 vn 0.058120 -0.097881 -0.993500
 # 1316 normals
 
-usemtl rock
+# usemtl rock
 f 3/1/3 65/2/65 2/3/2
 f 4/4/4 57/5/57 1/6/1
 f 10/7/10 5/8/5 4/4/4

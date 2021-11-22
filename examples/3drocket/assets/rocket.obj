@@ -106,7 +106,7 @@ vt 0.169138 0.532943
 vt 0.036486 0.532943
 vt 0.474970 0.795856
 vt 0.348104 0.795856
-usemtl Missile_Texture.png
+# usemtl Missile_Texture.png
 s off
 f 1/1 2/2 3/3 4/4
 f 5/5 8/6 7/7 6/8

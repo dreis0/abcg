@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
 # File Created: 13.07.2011 20:04:25
 
-mtllib asteroid OBJ.mtl
+# mtllib asteroid OBJ.mtl
 
 #
 # object Sphere01
@@ -12168,7 +12168,7 @@ vt 0.990909 0.000000 0.000000
 # 6214 texture coords
 
 g Sphere01
-usemtl asteroid
+# usemtl asteroid
 s off
 f -5942/-6214 -5941/-6213 -5940/-6212 
 f -5942/-6211 -5940/-6212 -5939/-6210 

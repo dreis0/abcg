@@ -1,8 +1,10 @@
 #ifndef VERTEX_HPP_
 #define VERTEX_HPP_
 
-#include "abcg.hpp"
 #include <glm/gtx/hash.hpp>
+
+#include "abcg.hpp"
+
 
 struct Vertex {
   glm::vec3 position{};
@@ -11,7 +13,6 @@ struct Vertex {
     return position == other.position;
   }
 };
-
 
 // Explicit specialization of std::hash for Vertex
 namespace std {
