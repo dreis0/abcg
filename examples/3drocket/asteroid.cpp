@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 #include <stdlib.h>
 #include <tiny_obj_loader.h>
+#include <filesystem>
 
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/hash.hpp>
@@ -30,6 +31,28 @@ void Asteroid::createBuffers() {
                      sizeof(m_indices[0]) * m_indices.size(), m_indices.data(),
                      GL_STATIC_DRAW);
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void Asteroid::loadModel(std::string assetsPath, std::string objName) {
+  terminateGL();
+
+  loadDiffuseTexture(assetsPath + "maps/pattern.png");
+  loadNormalTexture(assetsPath + "maps/pattern_normal.png");
+  loadObj(assetsPath + objName);
+}
+
+void Asteroid::loadDiffuseTexture(std::string_view path) {
+  if (!std::filesystem::exists(path)) return;
+
+  abcg::glDeleteTextures(1, &m_diffuseTexture);
+  m_diffuseTexture = abcg::opengl::loadTexture(path);
+}
+
+void Asteroid::loadNormalTexture(std::string_view path) {
+  if (!std::filesystem::exists(path)) return;
+
+  abcg::glDeleteTextures(1, &m_normalTexture);
+  m_normalTexture = abcg::opengl::loadTexture(path);
 }
 
 void Asteroid::loadObj(std::string_view path, bool standardize) {
@@ -128,14 +151,15 @@ void Asteroid::init(GLuint program) {
       glm::vec3(rangeSpin(m_randomEngine) % 2, rangeSpin(m_randomEngine) % 2,
                 rangeSpin(m_randomEngine) % 2);
 
-
   std::uniform_real_distribution<float> rangePosition(-2.0f, 2.0f);
-  m_initialPosition = glm::vec3(rangePosition(m_randomEngine), rangePosition(m_randomEngine),
-                                rangePosition(m_randomEngine));
+  m_initialPosition =
+      glm::vec3(rangePosition(m_randomEngine), rangePosition(m_randomEngine),
+                rangePosition(m_randomEngine));
 
   std::uniform_real_distribution<float> rangeDirection(-1.0f, 1.0f);
-  m_direction = glm::vec3(rangeDirection(m_randomEngine), rangeDirection(m_randomEngine),
-                          rangeDirection(m_randomEngine));
+  m_direction =
+      glm::vec3(rangeDirection(m_randomEngine), rangeDirection(m_randomEngine),
+                rangeDirection(m_randomEngine));
 
   m_timer.restart();
 

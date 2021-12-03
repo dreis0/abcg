@@ -56,8 +56,8 @@ void OpenGLWindow::initializeGL() {
   abcg::glEnable(GL_DEPTH_TEST);
 
   // Create program
-  m_program = createProgramFromFile(getAssetsPath() + "lookat.vert",
-                                    getAssetsPath() + "lookat.frag");
+  m_program = createProgramFromFile(getAssetsPath() + "normalmapping.vert",
+                                    getAssetsPath() + "normalmapping.frag");
 
   // Load rocket
   m_rocket.loadObj(getAssetsPath() + "rocket.obj");
@@ -71,10 +71,9 @@ void OpenGLWindow::initializeGL() {
 
   int idx = 0;
   for (auto& asteroid : m_asteroids) {
-    auto filename{getAssetsPath() + "asteroid" + std::to_string((idx % 3) + 1) +
-                  ".obj"};
+    asteroid.loadModel(getAssetsPath(),
+                       "asteroid" + std::to_string((idx % 3) + 1) + ".obj");
 
-    asteroid.loadObj(filename);
     idx++;
   }
 
@@ -132,6 +131,20 @@ void OpenGLWindow::paintGL() {
   const GLint modelMatrixLoc{
       abcg::glGetUniformLocation(m_program, "modelMatrix")};
   const GLint colorLoc{abcg::glGetUniformLocation(m_program, "color")};
+  const GLint normalMatrixLoc{
+      abcg::glGetUniformLocation(m_program, "normalMatrix")};
+  const GLint lightDirLoc{
+      abcg::glGetUniformLocation(m_program, "lightDirWorldSpace")};
+  const GLint shininessLoc{abcg::glGetUniformLocation(m_program, "shininess")};
+  const GLint IaLoc{abcg::glGetUniformLocation(m_program, "Ia")};
+  const GLint IdLoc{abcg::glGetUniformLocation(m_program, "Id")};
+  const GLint IsLoc{abcg::glGetUniformLocation(m_program, "Is")};
+  const GLint KaLoc{abcg::glGetUniformLocation(m_program, "Ka")};
+  const GLint KdLoc{abcg::glGetUniformLocation(m_program, "Kd")};
+  const GLint KsLoc{abcg::glGetUniformLocation(m_program, "Ks")};
+  const GLint diffuseTexLoc{
+      abcg::glGetUniformLocation(m_program, "diffuseTex")};
+  const GLint normalTexLoc{abcg::glGetUniformLocation(m_program, "normalTex")};
 
   // Set uniform variables for viewMatrix and projMatrix
   // These matrices are used for every scene object
@@ -141,9 +154,19 @@ void OpenGLWindow::paintGL() {
                            &m_camera.m_projMatrix[0][0]);
   abcg::glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);  // White
 
-  m_rocket.render(m_program);
+  // Set uniform variables used by every scene object
+  abcg::glUniform1i(diffuseTexLoc, 0);
+  abcg::glUniform1i(normalTexLoc, 1);
+
+  // Set uniform variables of the current object
+
   for (auto& asteroid : m_asteroids) {
     asteroid.render(m_program);
+
+    abcg::glUniform1f(shininessLoc, asteroid.m_shininess);
+    abcg::glUniform4fv(KaLoc, 1, &asteroid.m_Ka.x);
+    abcg::glUniform4fv(KdLoc, 1, &asteroid.m_Kd.x);
+    abcg::glUniform4fv(KsLoc, 1, &asteroid.m_Ks.x);
   }
 
   // Render each star
