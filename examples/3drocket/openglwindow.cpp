@@ -5,10 +5,14 @@
 #include <tiny_obj_loader.h>
 
 #include <cppitertools/itertools.hpp>
+#include <glm/fwd.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 #include <glm/gtx/hash.hpp>
 #include <string>
 #include <unordered_map>
+
+#include "abcg_openglfunctions.hpp"
 
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
   if (ev.type == SDL_KEYDOWN) {
@@ -60,16 +64,18 @@ void OpenGLWindow::initializeGL() {
   abcg::glEnable(GL_DEPTH_TEST);
 
   // Create program
-  m_program = createProgramFromFile(getAssetsPath() + "normal.vert",
-                                    getAssetsPath() + "normal.frag");
+  m_program = createProgramFromFile(getAssetsPath() + "normalmapping.vert",
+                                    getAssetsPath() + "normalmapping.frag");
 
   // Load rocket
+  m_rocket.loadDiffuseTexture(getAssetsPath() + "Missile_Texture.png");
   m_rocket.loadObj(getAssetsPath() + "rocket.obj");
 
   // Load asteroids
   m_asteroids.resize(m_qtd_asteroids);
 
   // Load star
+  m_model.loadNormalTexture(getAssetsPath() + "maps/asteroid1.mtl");
   m_model.loadObj(getAssetsPath() + "asteroid1.obj");
   m_model.setupVAO(m_program);
 
@@ -148,6 +154,8 @@ void OpenGLWindow::paintGL() {
   const GLint KsLoc{abcg::glGetUniformLocation(m_program, "Ks")};
   const GLint diffuseTexLoc{
       abcg::glGetUniformLocation(m_program, "diffuseTex")};
+  const GLint mappingModeLoc{
+      abcg::glGetUniformLocation(m_program, "mappingMode")};
   const GLint normalTexLoc{abcg::glGetUniformLocation(m_program, "normalTex")};
 
   // Set uniform variables for viewMatrix and projMatrix
@@ -158,19 +166,30 @@ void OpenGLWindow::paintGL() {
                            &m_camera.m_projMatrix[0][0]);
   abcg::glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);  // White
 
-  // Set uniform variables used by every scene object
   abcg::glUniform1i(diffuseTexLoc, 0);
+  abcg::glUniform1i(mappingModeLoc, m_mappingMode);
   abcg::glUniform1i(normalTexLoc, 1);
 
-  // Set uniform variables of the current object
+  const auto lightDirRotated{m_camera.m_viewMatrix * m_lightDir};
+  abcg::glUniform4fv(lightDirLoc, 1, &lightDirRotated.x);
+  abcg::glUniform1f(shininessLoc, m_shininess);
+  abcg::glUniform4fv(IaLoc, 1, &m_Ia.x);
+  abcg::glUniform4fv(IdLoc, 1, &m_Id.x);
+  abcg::glUniform4fv(IsLoc, 1, &m_Is.x);
+  abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
+  abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
+  abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
+
+  // Set uniform variables of rocket
+  abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_modelMatrix[0][0]);
+
+  const auto modelViewMatrix{glm::mat3(m_viewMatrix * m_modelMatrix)};
+  glm::mat3 normalMatrix{glm::inverseTranspose(modelViewMatrix)};
+  abcg::glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
+
   m_rocket.render(m_program);
   for (auto& asteroid : m_asteroids) {
     asteroid.render(m_program);
-
-    abcg::glUniform1f(shininessLoc, asteroid.m_shininess);
-    abcg::glUniform4fv(KaLoc, 1, &asteroid.m_Ka.x);
-    abcg::glUniform4fv(KdLoc, 1, &asteroid.m_Kd.x);
-    abcg::glUniform4fv(KsLoc, 1, &asteroid.m_Ks.x);
   }
 
   // Render each star
