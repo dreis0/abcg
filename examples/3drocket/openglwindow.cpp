@@ -52,12 +52,16 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
 void OpenGLWindow::initializeGL() {
   abcg::glClearColor(0, 0, 0, 1);
 
+#if !defined(__EMSCRIPTEN__)
+  abcg::glEnable(GL_PROGRAM_POINT_SIZE);
+#endif
+  abcg::glEnable(GL_BLEND);
   // Enable depth buffering
   abcg::glEnable(GL_DEPTH_TEST);
 
   // Create program
-  m_program = createProgramFromFile(getAssetsPath() + "normalmapping.vert",
-                                    getAssetsPath() + "normalmapping.frag");
+  m_program = createProgramFromFile(getAssetsPath() + "normal.vert",
+                                    getAssetsPath() + "normal.frag");
 
   // Load rocket
   m_rocket.loadObj(getAssetsPath() + "rocket.obj");
@@ -159,7 +163,7 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform1i(normalTexLoc, 1);
 
   // Set uniform variables of the current object
-
+  m_rocket.render(m_program);
   for (auto& asteroid : m_asteroids) {
     asteroid.render(m_program);
 

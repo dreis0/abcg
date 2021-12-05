@@ -25,6 +25,9 @@ class Model {
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
 
+  bool m_hasNormals{false};
+
+  void computeNormals();
   void createBuffers();
   void standardize();
 };

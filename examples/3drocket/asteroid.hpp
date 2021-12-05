@@ -42,6 +42,9 @@ class Asteroid {
   GLuint m_diffuseTexture{};
   GLuint m_normalTexture{};
 
+  bool m_hasNormals{false};
+
+  void computeNormals();
   void createBuffers();
   void standardize();
   void loadObj(std::string_view path, bool standardize = true);

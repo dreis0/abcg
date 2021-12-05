@@ -9,7 +9,7 @@
 class Rocket {
  public:
   void loadObj(std::string_view path, bool standardize = true);
-  void render(GLint colorLoc) const;
+  void render(GLint program) const;
   void init(GLuint program);
   void terminateGL();
 
@@ -26,6 +26,9 @@ class Rocket {
   std::vector<GLuint> m_indices;
   glm::vec4 m_color{0.8f, 0.8f, 0.8f, 1.0f};
 
+  bool m_hasNormals{false};
+
+  void computeNormals();
   void createBuffers();
   void standardize();
 };
