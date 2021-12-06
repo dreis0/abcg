@@ -9,6 +9,7 @@
 class Rocket {
  public:
   void loadDiffuseTexture(std::string_view path);
+  void loadNormalTexture(std::string_view path);
   void loadObj(std::string_view path, bool standardize = true);
   void render(GLint program) const;
   void init(GLuint program);
@@ -28,6 +29,7 @@ class Rocket {
   glm::vec4 m_Ks;
   float m_shininess;
   GLuint m_diffuseTexture{};
+  GLuint m_normalTexture{};
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
@@ -37,6 +39,7 @@ class Rocket {
   bool m_hasTexCoords{false};
 
   void computeNormals();
+  void computeTangents();
   void createBuffers();
   void standardize();
 };

@@ -68,15 +68,13 @@ void OpenGLWindow::initializeGL() {
                                     getAssetsPath() + "normalmapping.frag");
 
   // Load rocket
-  m_rocket.loadDiffuseTexture(getAssetsPath() + "Missile_Texture.png");
   m_rocket.loadObj(getAssetsPath() + "rocket.obj");
 
   // Load asteroids
   m_asteroids.resize(m_qtd_asteroids);
 
   // Load star
-  m_model.loadNormalTexture(getAssetsPath() + "maps/asteroid1.mtl");
-  m_model.loadObj(getAssetsPath() + "asteroid1.obj");
+  m_model.loadObj(getAssetsPath() + "asteroid3.obj");
   m_model.setupVAO(m_program);
 
   int idx = 0;
@@ -172,13 +170,9 @@ void OpenGLWindow::paintGL() {
 
   const auto lightDirRotated{m_camera.m_viewMatrix * m_lightDir};
   abcg::glUniform4fv(lightDirLoc, 1, &lightDirRotated.x);
-  abcg::glUniform1f(shininessLoc, m_shininess);
   abcg::glUniform4fv(IaLoc, 1, &m_Ia.x);
   abcg::glUniform4fv(IdLoc, 1, &m_Id.x);
   abcg::glUniform4fv(IsLoc, 1, &m_Is.x);
-  abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
-  abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
-  abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
 
   // Set uniform variables of rocket
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &m_modelMatrix[0][0]);
@@ -186,6 +180,11 @@ void OpenGLWindow::paintGL() {
   const auto modelViewMatrix{glm::mat3(m_viewMatrix * m_modelMatrix)};
   glm::mat3 normalMatrix{glm::inverseTranspose(modelViewMatrix)};
   abcg::glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
+
+  abcg::glUniform1f(shininessLoc, m_shininess);
+  abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
+  abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
+  abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
 
   m_rocket.render(m_program);
   for (auto& asteroid : m_asteroids) {

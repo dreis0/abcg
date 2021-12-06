@@ -2,9 +2,8 @@
 # File Created: 13.07.2011 20:04:25
 
 newmtl asteroid
-	Ns 0.000000
+	Ns 10.000000
 	Ni 1.500000
-	d 1.000000
 	Tr 0.000000
 	Tf 1.000000 1.000000 1.000000 
 	illum 2
@@ -12,7 +11,7 @@ newmtl asteroid
 	Kd 0.231373 0.231373 0.231373
 	Ks 0.000000 0.000000 0.000000
 	Ke 0.000000 0.000000 0.000000
-	map_Ka Map__15_Noise.tga
-	map_Kd Map__15_Noise.tga
-	map_Ke Map__12_Cellular.tga
-	map_bump -bm 0.800000 Map__4_Mix.tga
+	map_Ka maps/Map__15_Noise.tga
+	map_Kd maps/Map__15_Noise.tga
+	map_Ke maps/Map__12_Cellular.tga
+	map_bump -bm 0.800000 maps/Map__4_Mix.tga

@@ -1,7 +1,7 @@
 # Wavefront Obj file
 # 
 # verts: 1316 uv-s: 1627
-# mtllib rock_by_dommk.mtl
+mtllib asteroid2.mtl
 
 g rock
 #pivot 0.000000 0.000000 0.000000

@@ -38,6 +38,13 @@ void Rocket::loadDiffuseTexture(std::string_view path) {
   m_diffuseTexture = abcg::opengl::loadTexture(path);
 }
 
+void Rocket::loadNormalTexture(std::string_view path) {
+  if (!std::filesystem::exists(path)) return;
+
+  abcg::glDeleteTextures(1, &m_normalTexture);
+  m_normalTexture = abcg::opengl::loadTexture(path);
+}
+
 void Rocket::loadObj(std::string_view path, bool standardize) {
   const auto basePath{std::filesystem::path{path}.parent_path().string() + "/"};
 
@@ -134,12 +141,18 @@ void Rocket::loadObj(std::string_view path, bool standardize) {
 
     if (!mat.diffuse_texname.empty())
       loadDiffuseTexture(basePath + mat.diffuse_texname);
+
+    if (!mat.normal_texname.empty()) {
+      loadNormalTexture(basePath + mat.normal_texname);
+    } else if (!mat.bump_texname.empty()) {
+      loadNormalTexture(basePath + mat.bump_texname);
+    }
   } else {
     // Default values
     m_Ka = {0.1f, 0.1f, 0.1f, 1.0f};
     m_Kd = {0.7f, 0.7f, 0.7f, 1.0f};
     m_Ks = {1.0f, 1.0f, 1.0f, 1.0f};
-    m_shininess = 25.0f;
+    m_shininess = 50.0f;
   }
 
   if (standardize) {
@@ -148,6 +161,10 @@ void Rocket::loadObj(std::string_view path, bool standardize) {
 
   if (!m_hasNormals) {
     computeNormals();
+  }
+
+  if (m_hasTexCoords) {
+    computeTangents();
   }
 
   createBuffers();
@@ -285,6 +302,67 @@ void Rocket::computeNormals() {
   }
 
   m_hasNormals = true;
+}
+
+void Rocket::computeTangents() {
+  // Reserve space for bitangents
+  std::vector<glm::vec3> bitangents(m_vertices.size(), glm::vec3(0));
+
+  // Compute face tangents and bitangents
+  for (const auto offset : iter::range<int>(0, m_indices.size(), 3)) {
+    // Get face indices
+    const auto i1{m_indices.at(offset + 0)};
+    const auto i2{m_indices.at(offset + 1)};
+    const auto i3{m_indices.at(offset + 2)};
+
+    // Get face vertices
+    Vertex& v1{m_vertices.at(i1)};
+    Vertex& v2{m_vertices.at(i2)};
+    Vertex& v3{m_vertices.at(i3)};
+
+    const auto e1{v2.position - v1.position};
+    const auto e2{v3.position - v1.position};
+    const auto delta1{v2.texCoord - v1.texCoord};
+    const auto delta2{v3.texCoord - v1.texCoord};
+
+    glm::mat2 M;
+    M[0][0] = delta2.t;
+    M[0][1] = -delta1.t;
+    M[1][0] = -delta2.s;
+    M[1][1] = delta1.s;
+    M *= (1.0f / (delta1.s * delta2.t - delta2.s * delta1.t));
+
+    const auto tangent{glm::vec4(M[0][0] * e1.x + M[0][1] * e2.x,
+                                 M[0][0] * e1.y + M[0][1] * e2.y,
+                                 M[0][0] * e1.z + M[0][1] * e2.z, 0.0f)};
+
+    const auto bitangent{glm::vec3(M[1][0] * e1.x + M[1][1] * e2.x,
+                                   M[1][0] * e1.y + M[1][1] * e2.y,
+                                   M[1][0] * e1.z + M[1][1] * e2.z)};
+
+    // Accumulate on vertices
+    v1.tangent += tangent;
+    v2.tangent += tangent;
+    v3.tangent += tangent;
+
+    bitangents.at(i1) += bitangent;
+    bitangents.at(i2) += bitangent;
+    bitangents.at(i3) += bitangent;
+  }
+
+  for (auto&& [i, vertex] : iter::enumerate(m_vertices)) {
+    const auto& n{vertex.normal};
+    const auto& t{glm::vec3(vertex.tangent)};
+
+    // Orthogonalize t with respect to n
+    const auto tangent{t - n * glm::dot(n, t)};
+    vertex.tangent = glm::vec4(glm::normalize(tangent), 0);
+
+    // Compute handedness of re-orthogonalized basis
+    const auto b{glm::cross(n, t)};
+    const auto handedness{glm::dot(b, bitangents.at(i))};
+    vertex.tangent.w = (handedness < 0.0f) ? -1.0f : 1.0f;
+  }
 }
 
 void Rocket::terminateGL() {

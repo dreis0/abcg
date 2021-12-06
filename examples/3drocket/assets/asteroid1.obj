@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
 # File Created: 13.07.2011 20:04:25
 
-# mtllib asteroid OBJ.mtl
+mtllib asteroid1.mtl
 
 #
 # object Sphere01
