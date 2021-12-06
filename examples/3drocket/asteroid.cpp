@@ -226,7 +226,7 @@ void Asteroid::init(GLuint program) {
       glm::vec3(rangeSpin(m_randomEngine) % 2, rangeSpin(m_randomEngine) % 2,
                 rangeSpin(m_randomEngine) % 2);
 
-  std::uniform_real_distribution<float> rangePosition(-2.0f, 2.0f);
+  std::uniform_real_distribution<float> rangePosition(-1.2f, 1.2f);
   m_initialPosition =
       glm::vec3(rangePosition(m_randomEngine), rangePosition(m_randomEngine),
                 rangePosition(m_randomEngine));

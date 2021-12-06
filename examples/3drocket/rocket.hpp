@@ -19,6 +19,13 @@ class Rocket {
     return static_cast<int>(m_indices.size()) / 3;
   }
 
+  [[nodiscard]] glm::vec4 getKa() const { return m_Ka; }
+  [[nodiscard]] glm::vec4 getKd() const { return m_Kd; }
+  [[nodiscard]] glm::vec4 getKs() const { return m_Ks; }
+  [[nodiscard]] float getShininess() const { return m_shininess; }
+
+  [[nodiscard]] bool isUVMapped() const { return m_hasTexCoords; }
+
  private:
   GLuint m_VAO{};
   GLuint m_VBO{};

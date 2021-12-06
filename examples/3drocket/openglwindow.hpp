@@ -19,7 +19,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void terminateGL() override;
 
  private:
-  static const int m_numStars{1000};
+  static const int m_numStars{100};
   std::default_random_engine m_randomEngine;
   Model m_model;
   GLuint m_program{};
@@ -30,7 +30,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void randomizeStar(glm::vec3 &position, glm::vec3 &rotation);
 
   Rocket m_rocket{};
-  int m_qtd_asteroids{32};
+  int m_qtd_asteroids{6};
   std::list<Asteroid> m_asteroids;
 
   int m_viewportWidth{};
@@ -53,11 +53,14 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   glm::vec4 m_Ia{1.0f, 1.0f, 1.0f, 1.0f};
   glm::vec4 m_Id{1.0f, 1.0f, 1.0f, 1.0f};
   glm::vec4 m_Is{1.0f, 1.0f, 1.0f, 1.0f};
-  glm::vec4 m_Ka{0.1f, 0.1f, 0.1f, 1.0f};
+  glm::vec4 m_Ka{1.0f, 1.0f, 1.0f, 1.0f};
   glm::vec4 m_Kd{0.7f, 0.7f, 0.7f, 1.0f};
   glm::vec4 m_Ks{1.0f, 1.0f, 1.0f, 1.0f};
-  float m_shininess{500.0f};
+  float m_shininess{25.0f};
 
+  void loadRocketProperties();
+  void loadAsteroidProperties(Asteroid asteroid);
+  void loadStarsProperties();
   void update();
 };
 

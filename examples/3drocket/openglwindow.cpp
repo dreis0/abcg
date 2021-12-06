@@ -107,7 +107,7 @@ void OpenGLWindow::randomizeStar(glm::vec3& position, glm::vec3& rotation) {
   // Get random position
   // x and y coordinates in the range [-8, 8]
   // z coordinates in the range [-100, 50]
-  std::uniform_real_distribution<float> distPosXY(-8.0f, 8.0f);
+  std::uniform_real_distribution<float> distPosXY(-6.0f, 6.0f);
   std::uniform_real_distribution<float> distPosZ(-50.0f, 50.0f);
 
   position = glm::vec3(distPosXY(m_randomEngine), distPosXY(m_randomEngine),
@@ -119,6 +119,30 @@ void OpenGLWindow::randomizeStar(glm::vec3& position, glm::vec3& rotation) {
   rotation = glm::normalize(glm::vec3(distRotAxis(m_randomEngine),
                                       distRotAxis(m_randomEngine),
                                       distRotAxis(m_randomEngine)));
+}
+
+void OpenGLWindow::loadRocketProperties() {
+  // Use material properties from the loaded model
+  m_Ka = m_rocket.getKa();
+  m_Kd = m_rocket.getKd();
+  m_Ks = m_rocket.getKs();
+  m_shininess = m_rocket.getShininess();
+}
+
+void OpenGLWindow::loadStarsProperties() {
+  // Use material properties from the loaded model
+  m_Ka = m_model.getKa();
+  m_Kd = m_model.getKd();
+  m_Ks = m_model.getKs();
+  m_shininess = m_model.getShininess();
+}
+
+void OpenGLWindow::loadAsteroidProperties(Asteroid asteroid) {
+  // Use material properties from the loaded model
+  m_Ka = asteroid.getKa();
+  m_Kd = asteroid.getKd();
+  m_Ks = asteroid.getKs();
+  m_shininess = asteroid.getShininess();
 }
 
 void OpenGLWindow::paintGL() {
@@ -163,7 +187,6 @@ void OpenGLWindow::paintGL() {
   abcg::glUniformMatrix4fv(projMatrixLoc, 1, GL_FALSE,
                            &m_camera.m_projMatrix[0][0]);
   abcg::glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);  // White
-
   abcg::glUniform1i(diffuseTexLoc, 0);
   abcg::glUniform1i(mappingModeLoc, m_mappingMode);
   abcg::glUniform1i(normalTexLoc, 1);
@@ -181,15 +204,27 @@ void OpenGLWindow::paintGL() {
   glm::mat3 normalMatrix{glm::inverseTranspose(modelViewMatrix)};
   abcg::glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, &normalMatrix[0][0]);
 
+  loadRocketProperties();
   abcg::glUniform1f(shininessLoc, m_shininess);
   abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
   abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
   abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
-
   m_rocket.render(m_program);
+
   for (auto& asteroid : m_asteroids) {
+    loadAsteroidProperties(asteroid);
+    abcg::glUniform1f(shininessLoc, m_shininess);
+    abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
+    abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
+    abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
     asteroid.render(m_program);
   }
+
+  loadStarsProperties();
+  abcg::glUniform1f(shininessLoc, m_shininess);
+  abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
+  abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
+  abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
 
   // Render each star
   for (const auto index : iter::range(m_numStars)) {
@@ -251,9 +286,9 @@ void OpenGLWindow::update() {
 
     // If this star is behind the camera, select a new random position and
     // orientation, and move it back to -50
-    if (position.z > 50.0f) {
+    if (position.z > 30.0f) {
       randomizeStar(position, rotation);
-      position.z = -50.0f;  // Back to -50
+      position.z = -30.0f;  // Back to -50
     }
   }
 }

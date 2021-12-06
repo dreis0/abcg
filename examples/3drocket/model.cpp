@@ -147,10 +147,10 @@ void Model::loadObj(std::string_view path, bool standardize) {
     }
   } else {
     // Default values
-    m_Ka = {0.1f, 0.1f, 0.1f, 1.0f};
+    m_Ka = {1.0f, 1.0f, 1.0f, 1.0f};
     m_Kd = {0.7f, 0.7f, 0.7f, 1.0f};
     m_Ks = {1.0f, 1.0f, 1.0f, 1.0f};
-    m_shininess = 25.0f;
+    m_shininess = 50.0f;
   }
 
   if (standardize) {
