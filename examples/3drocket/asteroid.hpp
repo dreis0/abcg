@@ -16,14 +16,12 @@ class Asteroid {
   void init(GLuint program);
   void terminateGL();
 
-  [[nodiscard]] int getNumTriangles() const {
-    return static_cast<int>(m_indices.size()) / 3;
-  }
-
   [[nodiscard]] glm::vec4 getKa() const { return m_Ka; }
   [[nodiscard]] glm::vec4 getKd() const { return m_Kd; }
   [[nodiscard]] glm::vec4 getKs() const { return m_Ks; }
   [[nodiscard]] float getShininess() const { return m_shininess; }
+
+  int m_instances;
 
  private:
   GLuint m_VAO{};
@@ -39,9 +37,9 @@ class Asteroid {
   GLuint m_diffuseTexture{};
   GLuint m_normalTexture{};
 
-  glm::vec3 m_spinDirection{0, 0, 0};
-  glm::vec3 m_initialPosition{0.0f, 0.0f, 0.0f};
-  glm::vec3 m_direction{0.0f, 0.0f, 0.0f};
+  std::vector<glm::vec3> m_spinDirections;
+  std::vector<glm::vec3> m_initialPositions;
+  std::vector<glm::vec3> m_directions;
 
   std::default_random_engine m_randomEngine;
 

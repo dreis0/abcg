@@ -181,60 +181,72 @@ void Asteroid::loadObj(std::string_view path, bool standardize) {
 }
 
 void Asteroid::render(GLint m_program) const {
-  abcg::glBindVertexArray(m_VAO);
+  for (const auto index : iter::range(m_instances)) {
+    abcg::glBindVertexArray(m_VAO);
 
-  abcg::glActiveTexture(GL_TEXTURE0);
-  abcg::glBindTexture(GL_TEXTURE_2D, m_diffuseTexture);
+    abcg::glActiveTexture(GL_TEXTURE0);
+    abcg::glBindTexture(GL_TEXTURE_2D, m_diffuseTexture);
 
-  abcg::glActiveTexture(GL_TEXTURE1);
-  abcg::glBindTexture(GL_TEXTURE_2D, m_normalTexture);
+    abcg::glActiveTexture(GL_TEXTURE1);
+    abcg::glBindTexture(GL_TEXTURE_2D, m_normalTexture);
 
-  // Set texture wrapping parameters
-  abcg::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  abcg::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture wrapping parameters
+    abcg::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    abcg::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-  const GLint modelMatrixLoc{
-      abcg::glGetUniformLocation(m_program, "modelMatrix")};
-  const GLint colorLoc{abcg::glGetUniformLocation(m_program, "color")};
+    const GLint modelMatrixLoc{
+        abcg::glGetUniformLocation(m_program, "modelMatrix")};
+    const GLint colorLoc{abcg::glGetUniformLocation(m_program, "color")};
 
-  // Determine entity's intial position
-  glm::mat4 model{1.0f};
-  model = glm::mat4(1.0);
-  model = glm::translate(model, m_initialPosition);
-  model = glm::scale(model, glm::vec3(0.3f));
+    // Determine entity's intial position
+    auto initialPosition{m_initialPositions.at(index)};
+    auto spinDirection{m_spinDirections.at(index)};
+    auto direction{m_directions.at(index)};
 
-  // Move entity throughout the scene
-  float elapsedTime = (float)m_timer.elapsed();
-  model = glm::translate(model, m_direction * (elapsedTime / 12));
-  model =
-      glm::rotate(model, glm::radians(12.0f) * elapsedTime, m_spinDirection);
+    glm::mat4 model{1.0f};
+    model = glm::mat4(1.0);
+    model = glm::translate(model, initialPosition);
+    model = glm::scale(model, glm::vec3(0.3f));
 
-  abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(colorLoc, m_color[0], m_color[1], m_color[2], m_color[3]);
-  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
-                       nullptr);
+    // Move entity throughout the scene
+    float elapsedTime = (float)m_timer.elapsed();
+    model = glm::translate(model, direction * (elapsedTime / 12));
+    model =
+        glm::rotate(model, glm::radians(12.0f) * elapsedTime, spinDirection);
 
-  abcg::glBindVertexArray(0);
+    abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
+    abcg::glUniform4f(colorLoc, m_color[0], m_color[1], m_color[2], m_color[3]);
+    abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                         nullptr);
+
+    abcg::glBindVertexArray(0);
+  }
 }
 
 void Asteroid::init(GLuint program) {
   m_randomEngine.seed(
       std::chrono::steady_clock::now().time_since_epoch().count());
 
-  std::uniform_int_distribution<int> rangeSpin(-10, 10);
-  m_spinDirection =
-      glm::vec3(rangeSpin(m_randomEngine) % 2, rangeSpin(m_randomEngine) % 2,
-                rangeSpin(m_randomEngine) % 2);
+  m_spinDirections.resize(m_instances);
+  m_directions.resize(m_instances);
+  m_initialPositions.resize(m_instances);
 
-  std::uniform_real_distribution<float> rangePosition(-1.2f, 1.2f);
-  m_initialPosition =
-      glm::vec3(rangePosition(m_randomEngine), rangePosition(m_randomEngine),
-                rangePosition(m_randomEngine));
+  for (const auto index : iter::range(m_instances)) {
+    std::uniform_int_distribution<int> rangeSpin(-10, 10);
+    m_spinDirections[index] =
+        glm::vec3(rangeSpin(m_randomEngine) % 2, rangeSpin(m_randomEngine) % 2,
+                  rangeSpin(m_randomEngine) % 2);
 
-  std::uniform_real_distribution<float> rangeDirection(-1.0f, 1.0f);
-  m_direction =
-      glm::vec3(rangeDirection(m_randomEngine), rangeDirection(m_randomEngine),
-                rangeDirection(m_randomEngine));
+    std::uniform_real_distribution<float> rangePosition(-1.2f, 1.2f);
+    m_initialPositions[index] =
+        glm::vec3(rangePosition(m_randomEngine), rangePosition(m_randomEngine),
+                  rangePosition(m_randomEngine));
+
+    std::uniform_real_distribution<float> rangeDirection(-1.0f, 1.0f);
+    m_directions[index] = glm::vec3(rangeDirection(m_randomEngine),
+                            rangeDirection(m_randomEngine),
+                            rangeDirection(m_randomEngine));
+  }
 
   m_timer.restart();
 

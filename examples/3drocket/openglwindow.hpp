@@ -30,8 +30,12 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void randomizeStar(glm::vec3 &position, glm::vec3 &rotation);
 
   Rocket m_rocket{};
-  int m_qtd_asteroids{6};
-  std::list<Asteroid> m_asteroids;
+
+  int m_qtdAsteroids{22};
+  Asteroid m_asteroid1{};
+  Asteroid m_asteroid2{};
+
+  // std::list<Asteroid> m_asteroids;
 
   int m_viewportWidth{};
   int m_viewportHeight{};

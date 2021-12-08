@@ -70,27 +70,26 @@ void OpenGLWindow::initializeGL() {
   // Load rocket
   m_rocket.loadObj(getAssetsPath() + "rocket.obj");
 
-  // Load asteroids
-  m_asteroids.resize(m_qtd_asteroids);
-
   // Load star
   m_model.loadObj(getAssetsPath() + "asteroid3.obj");
   m_model.setupVAO(m_program);
 
-  int idx = 0;
-  for (auto& asteroid : m_asteroids) {
-    asteroid.loadModel(getAssetsPath(),
-                       "asteroid" + std::to_string((idx % 3) + 1) + ".obj");
+  // Load asteroids
+  m_asteroid1.m_instances = m_qtdAsteroids / 2;
+  m_asteroid2.m_instances = m_qtdAsteroids / 2;
 
-    idx++;
-  }
+  m_asteroid1.loadModel(getAssetsPath(), "asteroid1.obj");
+  m_asteroid2.loadModel(getAssetsPath(), "asteroid2.obj");
 
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_rocket.init(m_program);
-  for (auto& asteroid : m_asteroids) {
-    asteroid.init(m_program);
-  }
+  m_asteroid1.init(m_program);
+  m_asteroid2.init(m_program);
+
+  // for (auto& asteroid : m_asteroids) {
+  //   asteroid.init(m_program);
+  // }
 
   // Setup stars
   for (const auto index : iter::range(m_numStars)) {
@@ -211,14 +210,19 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
   m_rocket.render(m_program);
 
-  for (auto& asteroid : m_asteroids) {
-    loadAsteroidProperties(asteroid);
+    loadAsteroidProperties(m_asteroid1);
     abcg::glUniform1f(shininessLoc, m_shininess);
     abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
     abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
     abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
-    asteroid.render(m_program);
-  }
+    m_asteroid1.render(m_program);
+
+    loadAsteroidProperties(m_asteroid2);
+    abcg::glUniform1f(shininessLoc, m_shininess);
+    abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
+    abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
+    abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
+    m_asteroid2.render(m_program);
 
   loadStarsProperties();
   abcg::glUniform1f(shininessLoc, m_shininess);
@@ -260,10 +264,8 @@ void OpenGLWindow::terminateGL() {
   abcg::glDeleteProgram(m_program);
 
   m_rocket.terminateGL();
-  for (auto& asteroid : m_asteroids) {
-    asteroid.terminateGL();
-  }
-  m_asteroids.clear();
+  m_asteroid1.terminateGL();
+  m_asteroid2.terminateGL();
 }
 
 void OpenGLWindow::update() {
