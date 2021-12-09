@@ -170,7 +170,7 @@ void Rocket::loadObj(std::string_view path, bool standardize) {
   createBuffers();
 }
 
-void Rocket::render(GLint m_program) const {
+void Rocket::render(GLint m_program) {
   abcg::glBindVertexArray(m_VAO);
 
   abcg::glActiveTexture(GL_TEXTURE0);
@@ -191,8 +191,12 @@ void Rocket::render(GLint m_program) const {
   // Draw rocket and set it's angle
   glm::mat4 model{1.0f};
   model = glm::mat4(1.0);
-  model = glm::rotate(model, glm::radians(-90.0f),
-                      glm::vec3(0, 1, 0));  // (direita, cima, trás)
+
+  m_movement += m_isMoving ? m_movementTimer.elapsed() * m_acceleration : 0;
+  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -m_movement));
+  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+  // (direita, cima, trás)
+
   model = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0, 0, 1));
   model = glm::scale(model, glm::vec3(0.8f));
 
@@ -369,4 +373,12 @@ void Rocket::terminateGL() {
   abcg::glDeleteBuffers(1, &m_EBO);
   abcg::glDeleteBuffers(1, &m_VBO);
   abcg::glDeleteVertexArrays(1, &m_VAO);
+}
+
+void Rocket::toggleMovement() {
+  m_isMoving = !m_isMoving;
+
+  if (m_isMoving) {
+    m_movementTimer.restart();
+  }
 }

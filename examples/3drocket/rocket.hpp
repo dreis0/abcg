@@ -11,11 +11,12 @@ class Rocket {
   void loadDiffuseTexture(std::string_view path);
   void loadNormalTexture(std::string_view path);
   void loadObj(std::string_view path, bool standardize = true);
-  void render(GLint program) const;
+  void render(GLint program);
   void init(GLuint program);
   void terminateGL();
-
-  [[nodiscard]] int getNumTriangles() const {
+  void toggleMovement();
+  
+   [[nodiscard]] int getNumTriangles() const {
     return static_cast<int>(m_indices.size()) / 3;
   }
 
@@ -31,6 +32,7 @@ class Rocket {
   GLuint m_VBO{};
   GLuint m_EBO{};
 
+  // Material properties
   glm::vec4 m_Ka;
   glm::vec4 m_Kd;
   glm::vec4 m_Ks;
@@ -38,12 +40,18 @@ class Rocket {
   GLuint m_diffuseTexture{};
   GLuint m_normalTexture{};
 
+  bool m_hasNormals{false};
+  bool m_hasTexCoords{false};
+
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
   glm::vec4 m_color{0.8f, 0.8f, 0.8f, 1.0f};
 
-  bool m_hasNormals{false};
-  bool m_hasTexCoords{false};
+  // Properties for movement
+  abcg::ElapsedTimer m_movementTimer;
+  bool m_isMoving{false};
+  float m_movement = 0.0f;
+  float m_acceleration = 0.0025f;
 
   void computeNormals();
   void computeTangents();

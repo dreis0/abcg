@@ -51,6 +51,10 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
   } else {
     m_yMovement = 0;
   }
+
+  if(ev.type == SDL_MOUSEBUTTONUP || ev.type == SDL_MOUSEBUTTONDOWN){
+    m_rocket.toggleMovement();
+  }
 }
 
 void OpenGLWindow::initializeGL() {
@@ -210,19 +214,19 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
   m_rocket.render(m_program);
 
-    loadAsteroidProperties(m_asteroid1);
-    abcg::glUniform1f(shininessLoc, m_shininess);
-    abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
-    abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
-    abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
-    m_asteroid1.render(m_program);
+  loadAsteroidProperties(m_asteroid1);
+  abcg::glUniform1f(shininessLoc, m_shininess);
+  abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
+  abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
+  abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
+  m_asteroid1.render(m_program);
 
-    loadAsteroidProperties(m_asteroid2);
-    abcg::glUniform1f(shininessLoc, m_shininess);
-    abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
-    abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
-    abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
-    m_asteroid2.render(m_program);
+  loadAsteroidProperties(m_asteroid2);
+  abcg::glUniform1f(shininessLoc, m_shininess);
+  abcg::glUniform4fv(KaLoc, 1, &m_Ka.x);
+  abcg::glUniform4fv(KdLoc, 1, &m_Kd.x);
+  abcg::glUniform4fv(KsLoc, 1, &m_Ks.x);
+  m_asteroid2.render(m_program);
 
   loadStarsProperties();
   abcg::glUniform1f(shininessLoc, m_shininess);

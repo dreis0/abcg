@@ -19,7 +19,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void terminateGL() override;
 
  private:
-  static const int m_numStars{100};
+  static const int m_numStars{500};
   std::default_random_engine m_randomEngine;
   Model m_model;
   GLuint m_program{};
@@ -31,11 +31,9 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   Rocket m_rocket{};
 
-  int m_qtdAsteroids{22};
+  int m_qtdAsteroids{60};
   Asteroid m_asteroid1{};
   Asteroid m_asteroid2{};
-
-  // std::list<Asteroid> m_asteroids;
 
   int m_viewportWidth{};
   int m_viewportHeight{};
