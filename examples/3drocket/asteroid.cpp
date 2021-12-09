@@ -147,7 +147,7 @@ void Asteroid::loadObj(std::string_view path, bool standardize) {
     m_Ka = glm::vec4(mat.ambient[0], mat.ambient[1], mat.ambient[2], 1);
     m_Kd = glm::vec4(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2], 1);
     m_Ks = glm::vec4(mat.specular[0], mat.specular[1], mat.specular[2], 1);
-    m_shininess = mat.shininess;
+    m_shininess = mat.shininess > 0.50f ? mat.shininess : 0.50f;
 
     if (!mat.diffuse_texname.empty())
       loadDiffuseTexture(basePath + mat.diffuse_texname);

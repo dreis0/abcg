@@ -51,7 +51,7 @@ class Rocket {
   abcg::ElapsedTimer m_movementTimer;
   bool m_isMoving{false};
   float m_movement = 0.0f;
-  float m_acceleration = 0.0025f;
+  float m_acceleration = 0.004f;
 
   void computeNormals();
   void computeTangents();
